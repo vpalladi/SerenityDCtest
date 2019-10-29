@@ -4,7 +4,7 @@
 remove_hw_sio_scan [get_hw_sio_scans {}]
 
 # which precision
-set dwell_ber 1e-9
+set dwell_ber 1e-7
 
 # get the system time to name the directory
 set systemTime [clock seconds]

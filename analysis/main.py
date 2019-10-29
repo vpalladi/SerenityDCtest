@@ -14,7 +14,7 @@ parser = OptionParser()
 parser.add_option("-d", "--dir", dest="dirName",
                   help="The directory where the scans are located.", type='string')
 parser.add_option("-a", "--description", dest="scanDescription",
-                  help="The description of the scan. Goes to the histo axis.", type='string')
+                  help="The description of the scan. Goes to the histo axis.", type='string', default='main')
 parser.add_option("-g", "--generate", action='store_false', dest="genOutput",
                   help="Generates output.", default=True)
 parser.add_option("-p", "--plot", action='store_true', dest="genPlot",
@@ -24,7 +24,7 @@ parser.add_option("-f", "--baseFileName", dest="baseFileName",
 parser.add_option("-c", "--compareBaseDir", dest="compareBaseDir",
                   help="The base file name used to compare the current scan.", type='string', default='')
 parser.add_option("-b", "--descriptionCompare", dest="scanDescriptionCompare",
-                  help="The description of the coparison scan. Goes to the histo axis.", type='string')
+                  help="The description of the coparison scan. Goes to the histo axis.", type='string', default='compare')
 
 
 # read options

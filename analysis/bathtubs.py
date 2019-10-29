@@ -17,7 +17,7 @@ from scipy.optimize import fsolve
 from scipy.special import erfc
 from scipy.stats import norm
 
-
+debug = False
 red = (0.75,0,0,1)
 redAlpha = (0.75,0,0,0.5)
 green = (0,0.75,0,1)
@@ -52,6 +52,11 @@ class bathtub() :
         if self.fileName != '' :
             self.readScan( self.fileName )
 
+    def __eq__(self, other) :
+        if self.rxId == other.rxId :
+            return True
+        return False
+
     def readScan(self, fileName) :
         self.fileName = fileName
         csvFile = open( self.fileName )
@@ -76,15 +81,24 @@ class bathtub() :
                 self.horizontalOpening = float(r[-1])
         
         tmp = [ [float(x),float(y)] for x,y in zip(rows[19][1:],rows[20][1:]) ] 
-        self.x = np.array( [ i[0] for i in tmp] )
-        self.y = np.array( [ i[1] for i in tmp] )
+        self.x    = np.array( [ i[0] for i in tmp] )
+        self.y    = np.array( [ i[1] for i in tmp] )
         self.ylog = np.array( [ np.log(i[1] ) for i in tmp] )
 
         minY = min(self.y)
         
-        self.xpurge = np.array( [ i[0] for i in tmp if i[1]>minY ] )
-        self.ypurge = np.array( [ i[1] for i in tmp if i[1]>minY ] )
+        self.xpurge    = np.array( [ i[0] for i in tmp if i[1]>minY ] )
+        self.ypurge    = np.array( [ i[1] for i in tmp if i[1]>minY ] )
         self.ylogpurge = np.array( [ np.log( y ) for y in self.ypurge ] )
+
+        if debug :
+            print('self.filename',self.fileName)
+            print('len(self.x   )',len(self.x   ) )
+            print('len(self.y   )',len(self.y   ) )
+            print('len(self.ylog)',len(self.ylog) )
+            print('len(self.xpurge   )',len(self.xpurge   ) )
+            print('len(self.ypurge   )',len(self.ypurge   ) )
+            print('len(self.ylogpurge)',len(self.ylogpurge) )
 
     def getPrecision() :
         return self.dwellBER
@@ -228,9 +242,9 @@ class scan() :
 
     def compare( self, scan ) :
                 
-        if len(scan.scans) != len(self.scans) :            
-            print('Error: trying to compare scans with different number of links')
-            return None
+        #if len(scan.scans) != len(self.scans) :            
+        #    print('Error: trying to compare scans with different number of links')
+        #    return None
             
         firstOpeningAtSecondDwell = self.getOpening( scan.getDwell() ) 
         secondOpeningAtFirstDwell = scan.getOpening( self.getDwell() )
