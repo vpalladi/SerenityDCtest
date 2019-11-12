@@ -1,4 +1,6 @@
 
+# which precision
+set dwell_ber 1e-5
 
 # proc for json file creation
 proc writeJSON {fileOut obj} {
@@ -16,12 +18,8 @@ proc writeJSON {fileOut obj} {
     
 }
 
-
 # remove the current scans if any
 remove_hw_sio_scan [get_hw_sio_scans {}]
-
-# which precision
-set dwell_ber 1e-5
 
 # get the system time to name the directory
 set systemTime [clock seconds]
@@ -83,7 +81,10 @@ foreach group $groups {
 	    # save the scan! :D
 	    write_hw_sio_scan -force "$folderName/$DC/$scanName" [get_hw_sio_scans $xil_newScan]
        
-            puts $fout "\"$scanName\" : { \"DC\" : \"$DC\", \"tx\" : \"$txEndpoint\", \"rx\" : \"$rxEndpoint\" },"  
+            if { $i > 0 } {
+                puts $fout "\},"
+            }
+            puts $fout "\"$scanName\" : \{\n\"DC\" : \"$DC\", \"tx\" : \"$txEndpoint\", \"rx\" : \"$rxEndpoint\" "  
             
         }
 
@@ -92,8 +93,8 @@ foreach group $groups {
     }
 
 }
-
-puts $fout "}"
+puts $fout "\}"
+puts $fout "\}"
 close $fout
 
 exec mv ./config.json $folderName

@@ -86,7 +86,6 @@ if scanPathCompare != '' :
     
 fig.savefig('(main) All scans @'+str(s.getDwell()[0])+'.png')
 fig1.savefig('(main) Openings @'+str(s.getDwell()[0])+'.png')
-#fig2.savefig('(compare) Openings @'+str(s.getDwell()[0])+'.png')
 
 if genPlot :
     plt.show()
