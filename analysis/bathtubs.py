@@ -43,40 +43,76 @@ def BERlog(x, rho, muL, muR, sigma) :
 def BERlogShift(x, rho, muL, muR, sigma, yshift) :
     return ( BERlog(x, rho, muL, muR, sigma)+yshift  )
 
+class Pin() :
+    def __init__(self, x, y) :
+        self.x = x
+        self.y = y
+
+class Link() :
+
+    def __init__(self, txQuad, rxQuad, txPin, rxPin, x=(np.array([])), y=(np.array([])) ) :
+        self.txQuad = txQuad
+        self.rxQuad = rxQuad
+        self.txPin = Pin( int( re.sub('Y[0-9]*','',txPin).replace('X','') ), int( re.sub('X[0-9]*Y','',txPin) ) ) 
+        self.rxPin = Pin( int( re.sub('Y[0-9]*','',rxPin).replace('X','') ), int( re.sub('X[0-9]*Y','',rxPin) ) ) 
+        self.setXY( x, y )
+
+    def setXY( self, x, y ) :
+        self.x = x.copy()
+        self.y = y.copy()
+        self.yLog = np.array( [ np.log(y) for y in self.y ] )
+        
+        if( len(self.y) > 0 ) :
+            minY = min(self.y)
+
+        self.xpurge = np.array( [ x for x,y in zip( self.x, self.y ) if y>minY ] )
+        self.ypurge = np.array( [ y for y in self.y if y>minY ] )
+        self.ylogpurge = np.array( [ np.log( y ) for y in self.ypurge ] )
+
+
 class bathtub() :
 
-    def __init__(self, fileName='', tx='', rx='', x=[], y=[]) :
-        self.tx = tx
-        self.rx = rx
-        self.txQuad = re.findall('Quad_+[0-9]*', self.tx)[0].replace('Quad_','')
-        self.rxQuad = re.findall('Quad_+[0-9]*', self.rx)[0].replace('Quad_','')
-        self.txQuadPin = re.findall('X+[0-9]Y+[0-9]*', self.tx)[0].replace('Quad_','')
-        self.rxQuadPin = re.findall('X+[0-9]Y+[0-9]*', self.rx)[0].replace('Quad_','')
-        self.x = np.array(x)
-        self.y = np.array(y)
-        self.fileName = fileName
+    def __init__(self, fileName, txPath, rxPath ) :
 
-        if self.fileName != '' :
-            self.readScan( self.fileName )
-
-    def readScan(self, fileName) :
         self.fileName = fileName
+        self.txPath = txPath
+        self.rxPath = rxPath
+        
+        ### get quads
+        txQuad = int( re.findall('Quad_[0-9]*', self.txPath)[0].replace('Quad_','') )
+        rxQuad = int( re.findall('Quad_[0-9]*', self.rxPath)[0].replace('Quad_','') )
+        txQuadPin = re.findall('X[0-9]*Y[0-9]*', self.txPath)[0].replace('Quad_','')
+        rxQuadPin = re.findall('X[0-9]*Y[0-9]*', self.rxPath)[0].replace('Quad_','')
+
+        ### get the data 
+        self.data = Link(
+            txQuad,
+            rxQuad,
+            txQuadPin,
+            rxQuadPin
+        )
+
+        ### read the csv file
         csvFile = open( self.fileName )
-
-        csvReader = csv.reader(csvFile)
+        csvReader = csv.reader( csvFile )
 
         rows = [r for r in csvReader]
+
+        ### DC = 0/1
+        self.dcId = int( re.findall('DC[0-9]*', self.fileName)[0].replace('DC', '').split(' ')[0] )
+        ### Connector ID = Rx0/Tx0 Rx1/Tx1....
+        self.txConnectorId = int( re.findall('Tx[0-9]*', self.fileName)[0].replace('Tx', '') )
+        self.rxConnectorId = int( re.findall('Rx[0-9]*', self.fileName)[0].replace('Rx', '') )
+        ### fiber channel ID = 0-11 
+        print(self.fileName)
+        self.txFiberId = int( re.findall('tx[0-9]*', self.fileName)[0].replace('tx', '') )
+        self.rxFiberId = int( re.findall('rx[0-9]*', self.fileName)[0].replace('rx', '') )
 
         for r in rows :
 
             if r[0]=='Scan Name' :            
-                #self.title = r[-1].replace( re.findall('Link_+[0-9]*', r[-1] )[0], '' )
-                self.title = self.txQuad+'_'+self.txQuadPin+'->'+self.rxQuad+'_'+self.rxQuadPin
-                self.txConnectorId = int( re.findall('Tx+[0-9]*', r[-1])[0].replace('Tx', '') )
-                self.rxConnectorId = int( re.findall('Rx+[0-9]*', r[-1])[0].replace('Rx', '') )
-                self.txId = int( re.findall('tx+[0-9]*', r[-1])[0].replace('tx', '') )
-                self.rxId = int( re.findall('rx+[0-9]*', r[-1])[0].replace('rx', '') )
-                self.dcId = int( re.findall('DC+[0-9]*', r[-1])[0].replace('DC', '').split(' ')[0] )
+                
+                self.title = str(self.data.txQuad)+'_X'+str(self.data.txPin.x)+'Y'+str(self.data.txPin.y)+'->X'+str(self.data.rxPin.x)+'Y'+str(self.data.rxPin.y)
 
             if r[0]=='Dwell BER' :
                 self.dwellBER = float(r[-1])
@@ -85,17 +121,9 @@ class bathtub() :
             if r[0]=='Horizontal Opening' :
                 self.horizontalOpening = float(r[-1])
         
-        tmp = [ [float(x),float(y)] for x,y in zip(rows[19][1:],rows[20][1:]) ] 
-        self.x    = np.array( [ i[0] for i in tmp] )
-        self.y    = np.array( [ i[1] for i in tmp] )
-        self.ylog = np.array( [ np.log(i[1] ) for i in tmp] )
+        tmp = np.array( [ [float(x),float(y)] for x,y in zip(rows[19][1:],rows[20][1:]) ] ) 
 
-        minY = min(self.y)
-
-        
-        self.xpurge    = np.array( [ i[0] for i in tmp if i[1]>minY ] )
-        self.ypurge    = np.array( [ i[1] for i in tmp if i[1]>minY ] )
-        self.ylogpurge = np.array( [ np.log( y ) for y in self.ypurge ] )
+        self.data.setXY( tmp[:,0], tmp[:,1] ) 
 
         if debug :
             print('self.filename',self.fileName)
@@ -111,28 +139,28 @@ class bathtub() :
 
     def fit( self, start=() ) :
         if start: 
-            popt, pcov = curve_fit( BER, self.x, self.y, p0=start )
+            popt, pcov = curve_fit( BER, self.data.x, self.data.y, p0=start )
             return popt, pcov
         else :
-            popt, pcov = curve_fit( BER, self.x, self.y )
+            popt, pcov = curve_fit( BER, self.data.x, self.data.y )
             return popt, pcov
 
     def fitPurge( self ) :
-        popt, pcov = curve_fit( BER, self.xpurge, self.ypurge )
+        popt, pcov = curve_fit( BER, self.data.xpurge, self.data.ypurge )
         return popt, pcov
 
     def fitPurgeLog( self ) :
         start = (1, -27, 25, 1.2)
-        popt, pcov = curve_fit( BERlog, self.xpurge, self.ylogpurge, p0=start )
+        popt, pcov = curve_fit( BERlog, self.data.xpurge, self.data.ylogpurge, p0=start )
         return popt, pcov
 
     def fitR( self, start=() ) :
-        popt, pcov = curve_fit( BERr, self.x, self.y )
+        popt, pcov = curve_fit( BERr, self.data.x, self.data.y )
         return popt, pcov
 
     def fitL(self) :
         start = (0.2, -25, 3 )
-        popt, pcov = curve_fit( BERl, self.x, self.y )
+        popt, pcov = curve_fit( BERl, self.data.x, self.data.y )
         return popt, pcov
 
     def getOpening(self, BERvalue) :
@@ -140,7 +168,7 @@ class bathtub() :
         popt = np.append(popt, -np.log(BERvalue) )
         edges = fsolve( BERlogShift, [-20, 20], args=tuple(popt), factor=0.1 )
         opening = edges[1]-edges[0]
-        openingPC = abs(opening)/(self.x[-1]-self.x[0])
+        openingPC = abs(opening)/(self.data.x[-1]-self.data.x[0])
         return popt,pcov,edges,opening,openingPC
 
     def plotFitCurve(self, ax, fontsize=6) :
@@ -149,16 +177,12 @@ class bathtub() :
 
         # fit and plot the fit_curve
         poptpl, pcovpl  = self.fitPurgeLog()
-        ax.plot( self.x, BER(self.x, *poptpl), '--', color=green )
+        ax.plot( self.data.x, BER(self.data.x, *poptpl), '--', color=green )
 
         # text lables        
-        ax.set_title( self.title, fontdict={'fontsize':fontsize } )
+        ax.set_title( self.title, pad=-2,fontdict={'fontsize':fontsize } )
 
-#        ax.text(0.1, 0.8, 'delta@1e-8 '+str(format( o8[0]-o8[1], '.2f')), 
-#                     fontsize=fontsize, transform=ax.transAxes)
-#        ax.text(0.1, 0.7, 'pc@1e-8 '+str(format( np.abs(o8[0]-o8[1])/64, '.2f')), 
-#                     fontsize=fontsize, transform=ax.transAxes)
-        ax.text(0.1, 0.8, 'delta@1e-12 '+str(format( o12[0]-o12[1], '.2f')), 
+        ax.text(0.1, 0.7, 'delta@1e-12 '+str(format( o12[0]-o12[1], '.2f')), 
                      fontsize=fontsize, transform=ax.transAxes)
         ax.text(0.1, 0.9, 'pc@1e-12 '+str(format( np.abs(o12[0]-o12[1])/64, '.2f')), 
                      fontsize=fontsize, transform=ax.transAxes)
@@ -194,15 +218,15 @@ class scan() :
                 if val['DC'].replace('DC','') == DC.replace('DC','') :
                     fileName = scanPath+'/'+self.DC+'/'+key+'.csv'
                     print(fileName)
-                    self.scans.append( bathtub( fileName=fileName, tx=val['tx'], rx=val['rx'] ) )
+                    self.scans.append( bathtub( fileName, val['tx'], val['rx'] ) )
                     
         # sort the scans
         if sort=='rx' :
-            self.scans.sort( key=lambda s: s.rxQuad )
-#            self.scans.sort( key=lambda s: int( ( re.findall('Y+[0-9]', s.rxQuadPin )[0].replace('Y','')) ) )
+            self.scans.sort( key=lambda s: s.data.rxPin.y )
+            self.scans.sort( key=lambda s: s.data.rxQuad )
         elif sort=='tx' :
-            self.scans.sort( key=lambda s: s.txQuad )
-#            self.scans.sort( key=lambda s: int( ( re.findall('Y+[0-9]', s.txQuadPin )[0].replace('Y','')) ) )
+            self.scans.sort( key=lambda s: s.data.txPin.x )
+            self.scans.sort( key=lambda s: s.data.txQuad )
         else :
             print('Error: sorting for scans not suppoerted.')
             exit()
@@ -227,7 +251,7 @@ class scan() :
             return None
             
         # only the BER
-        ax.plot( self.scans[linkId].xpurge, self.scans[linkId].ypurge, 'o', markersize=3, color='c' )
+        ax.plot( self.scans[linkId].data.xpurge, self.scans[linkId].data.ypurge, 'o', markersize=3, color='c' )
         ax.set_yscale('log')
         ax.set_ylabel('BER')
         ax.set_xlabel('a.u.')
@@ -239,7 +263,7 @@ class scan() :
             return None
             
         # only the BER
-        ax.plot( self.scans[linkId].xpurge, self.scans[linkId].ypurge, 'o', markersize=3 )
+        ax.plot( self.scans[linkId].data.xpurge, self.scans[linkId].data.ypurge, 'o', markersize=3 )
         self.scans[linkId].plotFitCurve( ax, fontsize=10 )
         ax.set_yscale('log')
         ax.set_ylabel('BER')
@@ -339,30 +363,17 @@ class scan() :
 
         fig2,ax2 = plt.subplots( 2, 1, figsize=(16,16) )
         fig2.canvas.set_window_title( 'Relative normilized openings' )
-        #gs = ax2[1,0].get_gridspec()
-        #for a in ax2[1,:] :
-        #    a.remove() 
-        #ax2[1,0] = fig2.add_subplot(gs[1:, :])
         
         nbins = 40
         ax2[0].hist(openingDiffAtFirstDwell,  range=(-1,1), bins=nbins )
         ax2[0].set_title('opening diff at ('+str(self.getDwell()[0])+')' )
         ax2[0].text(0.1, 0.8, 'rms  '+str(format(np.std(openingDiffAtFirstDwell), '.3f')), 
                     transform=ax2[0].transAxes, size=16)
-        #tmp = [ i for i in openingDiffAtFirstDwell if i< 0.5 ]
-        #print ( '---- ',np.std(tmp), np.mean(tmp) ) 
         ax2[0].text(0.1, 0.7, 'mean '+str(format(np.mean(openingDiffAtFirstDwell), '.3f')), 
                       transform=ax2[0].transAxes, size=16)
         ax2[0].tick_params(size=12)
         
-        #ax2[0,1].hist(openingDiffAtSecondDwell, range=(-1,1), bins=nbins )
-        #
-        #ax2[0,1].set_title('opening diff at ('+str(scan.getDwell()[0])+')')
-        #ax2[0,1].text(0.1, 0.8, 'rms  '+str(format(np.std(openingDiffAtSecondDwell), '.3f')), 
-        #              transform=ax2[0,1].transAxes)
-        #ax2[0,1].text(0.1, 0.7, 'mean '+str(format(np.mean(openingDiffAtSecondDwell), '.3f')), 
-        #              transform=ax2[0,1].transAxes)
-
+        
         ax2[1].hist(openingDiffAt1em12, range=(-1,1), bins=nbins )
         ax2[1].set_title('opening diff at 1.e-12')
         ax2[1].text(0.1, 0.8, 'rms  '+str(format(np.std(openingDiffAt1em12), '.3f')), 
@@ -370,10 +381,7 @@ class scan() :
         ax2[1].text(0.1, 0.7, 'mean '+str(format(np.mean(openingDiffAt1em12), '.3f')), 
                     transform=ax2[1].transAxes, size=16)
         ax2[1].tick_params(size=12)
-        #tmp = [ i for i in openingDiffAt1em12 if i< 0.5 ]
-        #print ( '------ ',np.std(tmp), np.mean(tmp) ) 
         
-
         fig2.savefig( 'Relative normilized openings.png' )
 
         # scatter plots openings
@@ -383,17 +391,9 @@ class scan() :
 
         fig3,ax3 = plt.subplots( 2, 1, figsize=(16,16) )
         fig3.canvas.set_window_title( 'Correlations' )
-        #gs = ax3[1,0].get_gridspec()
-        #for a in ax3[1,:] :
-        #    a.remove() 
-        #ax3[1,0] = fig3.add_subplot(gs[1:, :])
-
+        
         thr=0.3
-        #x1,y1  = [thr,thr], [-1,-1]
-        #x2,y2  = [-1,-1], [thr,thr]
-        #vLine = mlines.Line2D([thr, thr], [0, 1], color=(1,0,0,0.5))
-        #hLine = mlines.Line2D([0, 1], [thr, thr], color=(1,0,0,0.5))
-
+        
         ax3[0].scatter( [ f[-1] for f in self.openingAtDwell ], [ f[-1] for f in secondOpeningAtFirstDwell ] )
         ax3[0].set_title('openings at ('+str(self.getDwell()[0])+')')
         ax3[0].set_ylabel( scan.description, size=14 )
@@ -405,18 +405,6 @@ class scan() :
         hLine0 = mlines.Line2D([0, 1], [thr, thr], color=(1,0,0,0.5))
         ax3[0].add_line(vLine0)
         ax3[0].add_line(hLine0)
-        
-        #ax3[0,1].scatter( [ f[-1] for f in scan.openingAtDwell ], [ f[-1] for f in firstOpeningAtSecondDwell ] )
-        ##ax3[0,1].add_collection(edgesColl)
-        #ax3[0,1].set_title('openings at compDwell ('+str(scan.getDwell()[0])+')')
-        #ax3[0,1].set_ylabel('main')
-        #ax3[0,1].set_xlabel('compare')
-        #ax3[0,1].set_ylim(0,1)
-        #ax3[0,1].set_xlim(0,1)
-        #vLine1 = mlines.Line2D([thr, thr], [0, 1], color=(1,0,0,0.5))
-        #hLine1 = mlines.Line2D([0, 1], [thr, thr], color=(1,0,0,0.5))
-        #ax3[0,1].add_line(vLine1)
-        #ax3[0,1].add_line(hLine1)
         
         ax3[1].scatter( [ f[-1] for f in self.openingAt1em12 ], [ f[-1] for f in scan.openingAt1em12 ] )
         ax3[1].set_title( 'openings at 1e-12' )
@@ -433,4 +421,3 @@ class scan() :
         fig3.savefig('Correlations.png')
         
         return 0
-        

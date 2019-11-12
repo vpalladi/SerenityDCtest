@@ -69,7 +69,7 @@ dict for { dcId DC } $DCs {
                 set txPath [ dict get [ dict get $data pathBaseGTH ] DC$dcId ]
             }
             
-            set description "Link_$dcId rx$rxMGTid tx$txMGTid"
+            set description "Link tx$txMGTid rx$rxMGTid"
             set rxPath "$rxPath/$rxMGT"
             set txPath "$txPath/$txMGT"
             
@@ -106,7 +106,13 @@ foreach link $links {
         commit_hw_sio [get_hw_sio_links $link]
     }
 
-    # reset
+    #rx reset
+    set_property LOGIC.RX_RESET_DATAPATH 1 [get_hw_sio_links $link]
+    commit_hw_sio [get_hw_sio_links $link]
+    set_property LOGIC.RX_RESET_DATAPATH 0 [get_hw_sio_links $link]
+    commit_hw_sio [get_hw_sio_links $link]
+    
+    # reset counters
     set_property LOGIC.MGT_ERRCNT_RESET_CTRL 1 [get_hw_sio_links $link]
     commit_hw_sio [get_hw_sio_links $link]
     set_property LOGIC.MGT_ERRCNT_RESET_CTRL 0 [get_hw_sio_links $link]
