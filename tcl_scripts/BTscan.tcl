@@ -1,10 +1,27 @@
 
 
+# proc for json file creation
+proc writeJSON {fileOut obj} {
+
+    dict for {key val} $obj {
+        puts $val
+        puts [dict keys $val]
+        if { [ llength $val ] > 0 } {
+            writeJSON $fileOut $val
+        } else {
+         return
+        }
+
+    } 
+    
+}
+
+
 # remove the current scans if any
 remove_hw_sio_scan [get_hw_sio_scans {}]
 
 # which precision
-set dwell_ber 1e-7
+set dwell_ber 1e-5
 
 # get the system time to name the directory
 set systemTime [clock seconds]
@@ -17,16 +34,23 @@ exec mkdir -p -- $folderName
 exec mkdir -p -- $folderName/DC0
 exec mkdir -p -- $folderName/DC1
 
-### get links 
-set links [get_hw_sio_links]
+# open the out file to store the configuration 
+set fout [open ./config.json w]
+puts $fout "{"
 
-set groups [get_hw_sio_linkgroups]
+### get links 
+set links [ get_hw_sio_links ]
+
+set groups [ get_hw_sio_linkgroups ]
+
+set config [ dict create ]
 
 # start loop
+set i 0
 foreach group $groups {
 
     set groupName [get_property DESCRIPTION $group]
-    set subFolder [ lindex [split $groupName ":"] 0 ]
+    set DC [ lindex [split $groupName ":"] 0 ]
     set links [get_hw_sio_links -of_objects [get_hw_sio_linkgroups $group]]
 
     foreach link $links {
@@ -40,6 +64,9 @@ foreach group $groups {
 
 	set PLL0status [get_property STATUS [lindex $QPLLs 0] ]
 	set PLL1status [get_property STATUS [lindex $QPLLs 1] ]
+
+        set txEndpoint [ get_property TX_ENDPOINT $link ]
+        set rxEndpoint [ get_property RX_ENDPOINT $link ]
 	
         # do not scan if pll is not locked, report it instead
 	if { $PLL0status == "NOT LOCKED"  } {
@@ -48,21 +75,25 @@ foreach group $groups {
 	    set xil_newScan [create_hw_sio_scan -description $scanName  1d_bathtub  [lindex [get_hw_sio_links $link] ] ]
 	    set_property HORIZONTAL_INCREMENT {1} [get_hw_sio_scans $xil_newScan]
 	    set_property DWELL_BER $dwell_ber [get_hw_sio_scans $xil_newScan]
-        
+
 	    # run the scan! :) 
 	    run_hw_sio_scan [get_hw_sio_scans $xil_newScan]
 	    wait_on_hw_sio_scan [get_hw_sio_scans $xil_newScan]
         
 	    # save the scan! :D
-	    write_hw_sio_scan -force "$folderName/$subFolder/$scanName" [get_hw_sio_scans $xil_newScan]
-	} 
+	    write_hw_sio_scan -force "$folderName/$DC/$scanName" [get_hw_sio_scans $xil_newScan]
+       
+            puts $fout "\"$scanName\" : { \"DC\" : \"$DC\", \"tx\" : \"$txEndpoint\", \"rx\" : \"$rxEndpoint\" },"  
+            
+        }
+
+        incr i
 	
     }
 
 }
 
+puts $fout "}"
+close $fout
 
-
-
-
-
+exec mv ./config.json $folderName

@@ -4,6 +4,7 @@ import csv
 import os
 import math
 import re
+import json
 
 import matplotlib.pyplot as plt
 import matplotlib.collections as mc
@@ -44,18 +45,19 @@ def BERlogShift(x, rho, muL, muR, sigma, yshift) :
 
 class bathtub() :
 
-    def __init__(self, fileName='', x=[], y=[]) :
+    def __init__(self, fileName='', tx='', rx='', x=[], y=[]) :
+        self.tx = tx
+        self.rx = rx
+        self.txQuad = re.findall('Quad_+[0-9]*', self.tx)[0].replace('Quad_','')
+        self.rxQuad = re.findall('Quad_+[0-9]*', self.rx)[0].replace('Quad_','')
+        self.txQuadPin = re.findall('X+[0-9]Y+[0-9]*', self.tx)[0].replace('Quad_','')
+        self.rxQuadPin = re.findall('X+[0-9]Y+[0-9]*', self.rx)[0].replace('Quad_','')
         self.x = np.array(x)
         self.y = np.array(y)
         self.fileName = fileName
 
         if self.fileName != '' :
             self.readScan( self.fileName )
-
-    def __eq__(self, other) :
-        if self.rxId == other.rxId :
-            return True
-        return False
 
     def readScan(self, fileName) :
         self.fileName = fileName
@@ -65,13 +67,16 @@ class bathtub() :
 
         rows = [r for r in csvReader]
 
-        for r in rows :            
-            if r[0]=='Scan Name' :
-                self.title = r[-1]
-                self.txId = int( re.findall('Tx+[0-9]*', self.title)[0].replace('Tx', '') )
-                self.rxId = int( re.findall('Rx+[0-9]*', self.title)[0].replace('Rx', '') )
-                self.dcId = int( re.findall('Link_[0-9]+\s[0-9]+', self.title)[0].replace('Link_', '').split(' ')[0] )
-                self.linkId = int( re.findall('Link_[0-9]+\s[0-9]+', self.title)[0].replace('Link_', '').split(' ')[1] )
+        for r in rows :
+
+            if r[0]=='Scan Name' :            
+                #self.title = r[-1].replace( re.findall('Link_+[0-9]*', r[-1] )[0], '' )
+                self.title = self.txQuad+'_'+self.txQuadPin+'->'+self.rxQuad+'_'+self.rxQuadPin
+                self.txConnectorId = int( re.findall('Tx+[0-9]*', r[-1])[0].replace('Tx', '') )
+                self.rxConnectorId = int( re.findall('Rx+[0-9]*', r[-1])[0].replace('Rx', '') )
+                self.txId = int( re.findall('tx+[0-9]*', r[-1])[0].replace('tx', '') )
+                self.rxId = int( re.findall('rx+[0-9]*', r[-1])[0].replace('rx', '') )
+                self.dcId = int( re.findall('DC+[0-9]*', r[-1])[0].replace('DC', '').split(' ')[0] )
 
             if r[0]=='Dwell BER' :
                 self.dwellBER = float(r[-1])
@@ -86,6 +91,7 @@ class bathtub() :
         self.ylog = np.array( [ np.log(i[1] ) for i in tmp] )
 
         minY = min(self.y)
+
         
         self.xpurge    = np.array( [ i[0] for i in tmp if i[1]>minY ] )
         self.ypurge    = np.array( [ i[1] for i in tmp if i[1]>minY ] )
@@ -145,8 +151,7 @@ class bathtub() :
         poptpl, pcovpl  = self.fitPurgeLog()
         ax.plot( self.x, BER(self.x, *poptpl), '--', color=green )
 
-        # text lables
-        
+        # text lables        
         ax.set_title( self.title, fontdict={'fontsize':fontsize } )
 
 #        ax.text(0.1, 0.8, 'delta@1e-8 '+str(format( o8[0]-o8[1], '.2f')), 
@@ -174,18 +179,34 @@ class bathtub() :
 # scan class 
 class scan() :
     
-    def __init__(self, dirName, description='BER Scan') :
+    def __init__(self, scanPath, DC, description='BER Scan', sort='rx') :
         
-        # get the scans
-        files = os.listdir(dirName)
+        # info
+        self.scanPath = scanPath
         self.description = description
-        self.dirName = dirName
-        self.scans = [ bathtub( fileName=(self.dirName+f) ) for f in files ]
-        
-        # sort the scans
-        self.scans.sort( key=lambda s: s.linkId )
-        self.scans.sort( key=lambda s: s.rxId )
+        self.DC = 'DC'+DC.replace('DC','')
+        self.scans = []
 
+        # get the scans
+        with open( scanPath+'/config.json' ) as json_file :
+            data  = json.load( json_file )
+            for key,val in data.items() :
+                if val['DC'].replace('DC','') == DC.replace('DC','') :
+                    fileName = scanPath+'/'+self.DC+'/'+key+'.csv'
+                    print(fileName)
+                    self.scans.append( bathtub( fileName=fileName, tx=val['tx'], rx=val['rx'] ) )
+                    
+        # sort the scans
+        if sort=='rx' :
+            self.scans.sort( key=lambda s: s.rxQuad )
+#            self.scans.sort( key=lambda s: int( ( re.findall('Y+[0-9]', s.rxQuadPin )[0].replace('Y','')) ) )
+        elif sort=='tx' :
+            self.scans.sort( key=lambda s: s.txQuad )
+#            self.scans.sort( key=lambda s: int( ( re.findall('Y+[0-9]', s.txQuadPin )[0].replace('Y','')) ) )
+        else :
+            print('Error: sorting for scans not suppoerted.')
+            exit()
+ 
         # get the openings
         self.openingAtDwell = self.getOpening( self.getDwell() ) 
         self.openingAt1em12 = self.getOpening( [ 1.e-12 for i in range(0, len(self.scans) ) ] )
@@ -240,11 +261,24 @@ class scan() :
         ax.set_ylabel( 'linkId' )
         ax.set_xlabel( 'a.u.' )
 
+    def getAllOpeningsPlotDiff( self, ax ) :
+
+        # plot all the openings         
+        openings12 = [ (o12[2][1]-o12[2][0]) for i,o12 in enumerate(self.openingAt1em12) ]
+        link       = [ i for i,o12 in enumerate(self.openingAt1em12) ]
+        colours    = [ green if s.isAccepted() else red for s in self.scans ]
+        
+        ax.scatter(openings12,link, c=colours)
+        ax.set_ylim( [-1,self.getNlinks()] )
+        ax.set_xlim( [0,64] )
+        ax.set_ylabel( 'linkId' )
+        ax.set_xlabel( 'a.u.' )
+
     def compare( self, scan ) :
                 
-        #if len(scan.scans) != len(self.scans) :            
-        #    print('Error: trying to compare scans with different number of links')
-        #    return None
+        if len(scan.scans) != len(self.scans) :            
+            print('Error: trying to compare scans with different number of links')
+            return None
             
         firstOpeningAtSecondDwell = self.getOpening( scan.getDwell() ) 
         secondOpeningAtFirstDwell = scan.getOpening( self.getDwell() )
