@@ -79,7 +79,7 @@ class Link():
         self.ylogpurge = np.array([np.log(y) for y in self.ypurge])
 
 
-class bathtub():
+class BathTub():
 
     def __init__(self, fileName, txPath, rxPath):
 
@@ -248,7 +248,7 @@ class scan():
                 if val['DC'].replace('DC', '') == DC.replace('DC', ''):
                     fileName = scanPath + '/' + self.DC + '/' + key + '.csv'
                     print(fileName)
-                    self.scans.append(bathtub(fileName, val['tx'], val['rx']))
+                    self.scans.append(BathTub(fileName, val['tx'], val['rx']))
 
         # sort the scans
         if sort == 'rx':
@@ -430,8 +430,8 @@ class scan():
         # scatter plots openings
         openingDiffAtFirstDwell = [(f[-1] - s[-1]) / f[-1]
                                    for f, s in zip(self.openingAtDwell, secondOpeningAtFirstDwell)]
-        openingDiffAtSecondDwell = [
-            (f[-1] - s[-1]) / f[-1] for f, s in zip(scan.openingAtDwell, firstOpeningAtSecondDwell)]
+        # openingDiffAtSecondDwell = [
+        #     (f[-1] - s[-1]) / f[-1] for f, s in zip(scan.openingAtDwell, firstOpeningAtSecondDwell)]
         openingDiffAt1em12 = [(f[-1] - s[-1]) / f[-1]
                               for f, s in zip(self.openingAt1em12, scan.openingAt1em12)]
 

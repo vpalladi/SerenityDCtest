@@ -5,7 +5,7 @@ import os
 import matplotlib.pyplot as plt
 # from matplotlib import collections as mc
 
-from bathtubs import bathtub
+from bathtubs import BathTub
 
 # parser
 parser = OptionParser()
@@ -23,9 +23,9 @@ secondDirName = options.secondDir
 
 # get the scans
 filesFD = os.listdir(firstDirName)
-scansFD = [bathtub(fileName=(firstDirName + '/' + f)) for f in filesFD]
+scansFD = [BathTub(fileName=(firstDirName + '/' + f)) for f in filesFD]
 filesSD = os.listdir(secondDirName)
-scansSD = [bathtub(fileName=(secondDirName + '/' + f)) for f in filesSD]
+scansSD = [BathTub(fileName=(secondDirName + '/' + f)) for f in filesSD]
 
 openings_1em12_FD = []
 openings_1em12_SD = []

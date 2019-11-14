@@ -2,19 +2,17 @@ from glob import glob
 import pymongo
 import cProfile
 import pstats
-from pstats import SortKey
 from run import Run
 
 
 def main():
     client = pymongo.MongoClient('mongodb://tjames-pc:27017/')
-    db = client['test_db']
+    db = client['serenity_dc_testing']
     runs = db['runs']
-    files = glob('data/DC0/*')
+    files = glob('data/20191106122731/DC0/*')
     print(len(files))
     for file in files:
         run = Run.fromFile(file)
-        run.addNote('Permuted cables')
         run.insertIntoCollection(runs)
 
 

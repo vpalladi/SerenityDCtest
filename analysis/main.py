@@ -21,14 +21,16 @@ def main():
         type='string', default='0')
     parser.add_option(
         "-a", "--description", dest="scanDescription",
-        help="The description of the scan. Goes to the histo axis.", type='string',
-        default='main')
+        help="The description of the scan. Goes to the histo axis.",
+        type='string', default='main')
     parser.add_option(
         "-q", "--scanPathCompare", dest="scanPathCompare",
-        help="The config file for the copmare scan.", type='string', default='')
+        help="The config file for the copmare scan.", type='string',
+        default='')
     parser.add_option(
         "-m", "--DCcompare", dest="DCcompare",
-        help="The config file for the compare scan.", type='string', default='0')
+        help="The config file for the compare scan.", type='string',
+        default='0')
     parser.add_option(
         "-b", "--descriptionCompare", dest="scanDescriptionCompare",
         help="The description of the coparison scan. Goes to the histo axis.",
