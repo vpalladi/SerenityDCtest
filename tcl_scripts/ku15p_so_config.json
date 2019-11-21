@@ -1,7 +1,9 @@
 
 {
+    "BaseBoard" : "Serenity-07",
     "DCs" : { 
         "0" : {
+            "id" : "004",
             "connections" : {
                 "0" : { "Tx" : "0",
                         "Rx" : "0",
@@ -30,6 +32,7 @@
             }
         },
         "1" : {
+            "id" : "none",
             "connections" : {
             }
         }
