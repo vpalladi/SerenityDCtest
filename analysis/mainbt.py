@@ -8,8 +8,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 # import matplotlib.collections as mc
 
-from scan import scan
-# from bathtubs import scan
+# from scan import scan
+from bathtubs import scan
 
 import time
 
