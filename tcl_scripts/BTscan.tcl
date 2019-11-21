@@ -94,7 +94,7 @@ foreach group $groups {
         set tx_polarity [ get_property PORT.TXPOLARITY $link ]
         set rx_polarity [ get_property PORT.RXPOLARITY $link ]
         set DFE_enabled [ get_property RXDFEENABLED    $link ]
-        
+
         if { $i > 0 } {
             puts $fout "\},"
         }
