@@ -53,22 +53,37 @@ class Run:
         r.dict = dictionary
         return r
 
+    @classmethod
+    def fromJSON(cls, key, config_entry, path, comment=""):
+        r = cls()
+        r.dict = config_entry
+        r.loadFile("%s/%s/%s.csv" % (path, config_entry['site'], key))
+        r.dict['timestamp'] = re.search("[0-9]*$", path).group()
+        try:
+            r.dict['category'] = re.search("\_([coperfib]*):", key).group(1)
+        except AttributeError:
+            pass
+        try:
+            r.dict['txquad'] = int(re.search("Quad_([0-9]*)", config_entry['tx']).group(1))
+        except AttributeError:
+            pass
+        try:
+            r.dict['rxquad'] = int(re.search("Quad_([0-9]*)", config_entry['rx']).group(1))
+        except AttributeError:
+            pass
+        try:
+            r.dict['txpin'] = re.search("X[0-9]*Y[0-9]*", config_entry['tx']).group()
+        except AttributeError:
+            pass
+        try:
+            r.dict['rxpin'] = re.search("X[0-9]*Y[0-9]*", config_entry['rx']).group()
+        except AttributeError:
+            pass
+        r.dict['comment'] = comment
+        return r
+
     def loadFile(self, filename):
         self.filename = filename
-        self.short_filename = self.filename[
-            self.filename.rfind('/')+1:self.filename.rfind('.')].strip()
-        reg = re.search('(?<=Scan )[A-Za-z0-9]*', self.short_filename)
-        if reg:
-            self.dict['daughter_card'] = reg.group()
-        reg = re.search('(?<=Tx)[0-9]*', self.short_filename)
-        if reg:
-            self.dict['tx'] = int(reg.group())
-        reg = re.search('(?<=Rx)[0-9]*', self.short_filename)
-        if reg:
-            self.dict['rx'] = int(reg.group())
-        reg = re.search('[0-9]*$', self.short_filename)
-        if reg:
-            self.dict['fibre_channel'] = int(reg.group())
 
         lines = [line.strip() for line in open(self.filename)]
         scan = False

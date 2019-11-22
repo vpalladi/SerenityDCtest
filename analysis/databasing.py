@@ -1,6 +1,6 @@
 import pymongo
 import json
-from run import Run
+from .run import Run
 
 
 config_path = "analysis/db_config.json"
@@ -18,6 +18,11 @@ def init():
 def insertData(filename):
     client, db, runs = init()
     run = Run.fromFile(filename)
+    return run.insertIntoCollection(runs)
+
+
+def insertRun(run):
+    client, db, runs = init()
     return run.insertIntoCollection(runs)
 
 

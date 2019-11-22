@@ -3,6 +3,7 @@ import pymongo
 import cProfile
 import pstats
 from run import Run
+from databasing import insertData
 
 
 def main():
