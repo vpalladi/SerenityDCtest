@@ -1,6 +1,6 @@
 
 {
-    "BaseBoard" : "Serenity-07",
+    "BaseBoard" : "Serenity-06",
     "DCs" : { 
         "0" : {
             "id" : "004",
@@ -19,15 +19,15 @@
                       },
                 "3" : { "Tx" : "3",
                         "Rx" : "3",
-                        "type" : "fiber"
+                        "type" : "copper"
                       },
                 "4" : { "Tx" : "4",
-                        "Rx" : "5",
-                        "type" : "fiber"
+                        "Rx" : "4",
+                        "type" : "copper"
                       },
                 "5" : { "Tx" : "5",
-                        "Rx" : "4",
-                        "type" : "fiber"
+                         "Rx" : "5",
+                        "type" : "copper"
                       }
             }
         },
@@ -41,11 +41,11 @@
 
     "pathBaseGTY" : { 
         "DC0" : "localhost:3121/xilinx_tcf/Digilent/210249A847C3/0_1_0_50/IBERT",
-        "DC1" : "localhost:3121/xilinx_tcf/Digilent/210249A847C3/1_1_0_50/IBERT"
+        "DC1" : "localhost:3121/xilinx_tcf/Digilent/210249A847C3/0_1_0_50/IBERT"
     },
     "pathBaseGTH" : { 
         "DC0" : "localhost:3121/xilinx_tcf/Digilent/210249A847C3/0_1_0_0/IBERT",
-        "DC1" : "localhost:3121/xilinx_tcf/Digilent/210249A847C3/1_1_0_0/IBERT"
+        "DC1" : "localhost:3121/xilinx_tcf/Digilent/210249A847C3/0_1_0_0/IBERT"
     },
     "tx0" : {
         "MGTs" : {

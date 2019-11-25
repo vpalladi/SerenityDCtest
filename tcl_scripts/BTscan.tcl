@@ -1,6 +1,9 @@
 
-# which precision
-set dwell_ber 1e-5
+### which precision ###
+
+set dwell_ber 1e-9
+
+######################
 
 # proc for json file creation
 proc writeJSON {fileOut obj} {

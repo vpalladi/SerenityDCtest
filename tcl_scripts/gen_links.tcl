@@ -20,8 +20,8 @@ dict for { siteId DC } $DCs {
     set DCid [ dict get $DC id ]
 
     if { [string compare -nocase $DCid "none"] != 0 } {
-
-        puts "DC $dcId on site: $siteId"
+ 
+        puts "DC $DCid on site: $siteId"
 
         set connections [ dict get $DC connections ]
         set pathBaseGTY [ dict get [ dict get $data pathBaseGTY ] DC$siteId ]
@@ -80,12 +80,15 @@ dict for { siteId DC } $DCs {
                 set rxPath "$rxPath/$rxMGT"
                 set txPath "$txPath/$txMGT"
             
+                puts $txPath
+                puts $rxPath
+
                 set xil_newLink [create_hw_sio_link -description $description [lindex [get_hw_sio_txs $txPath] 0] [lindex [get_hw_sio_rxs $rxPath] 0] ]
                 lappend xil_newLinks $xil_newLink
                 
             }
             
-            set groupDescription "$baseBoard\_site$siteId\_DC$DCid:Tx$txId-Rx$rxId"
+            set groupDescription "$baseBoard\_site$siteId\_DC$DCid\_$connectionType:Tx$txId-Rx$rxId"
             puts $groupDescription
             set xil_newLinkGroup [create_hw_sio_linkgroup -description $groupDescription [get_hw_sio_links $xil_newLinks]]
             unset xil_newLinks

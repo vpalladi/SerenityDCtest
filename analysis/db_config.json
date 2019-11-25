@@ -1,6 +1,0 @@
-{
-    "hostname": "tjames-pc",
-    "port": 27017,
-    "database": "serenity_dc_testing",
-    "collection": "runs"
-}

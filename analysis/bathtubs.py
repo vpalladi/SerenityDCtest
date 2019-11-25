@@ -227,25 +227,23 @@ class BathTub():
             return False
         return True
 
-# scan class
-
-
+### scan class ###
 class scan():
 
-    def __init__(self, scanPath, DC, description='BER Scan', sort='rx'):
+    def __init__(self, scanPath, site, description='BER Scan', sort='rx'):
 
         # info
         self.scanPath = scanPath
         self.description = description
-        self.DC = 'DC' + DC.replace('DC', '')
+        self.site= 'site' + site.replace('site', '')
         self.scans = []
 
         # get the scans
         with open(scanPath + '/config.json') as json_file:
             data = json.load(json_file)
             for key, val in data.items():
-                if val['DC'].replace('DC', '') == DC.replace('DC', ''):
-                    fileName = scanPath + '/' + self.DC + '/' + key + '.csv'
+                if val['site'].replace('site', '') == site.replace('site', ''):
+                    fileName = scanPath + '/' + self.site + '/' + key + '.csv'
                     # print(fileName)
                     self.scans.append(BathTub(fileName, val['tx'], val['rx']))
 

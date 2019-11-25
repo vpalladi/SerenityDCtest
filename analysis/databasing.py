@@ -3,11 +3,14 @@ import json
 from run import Run
 
 
-config_path = "analysis/db_config.json"
+config = { "hostname": "tjames-pc",
+           "port": 27017,
+           "database": "serenity_dc_testing",
+           "collection": "runs"
+       }
 
 
 def init():
-    config = json.load(open(config_path))
     client = pymongo.MongoClient(
         'mongodb://%s:%d/' % (config['hostname'], config['port']))
     db = client[config['database']]
