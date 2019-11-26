@@ -14,12 +14,16 @@ from scipy.optimize import curve_fit
 from scipy.optimize import fsolve
 from scipy.special import erfc
 
+# colours
+red = (0.75, 0, 0, 1)
+redAlpha = (0.75, 0, 0, 0.5)
+green = (0, 0.75, 0, 1)
+greenAlpha = (0, 0.75, 0, 0.5)
 
 def BERr(x, rho, muR, sigma):
     R = erfc((- x + muR) / (sigma * np.sqrt(2)))
     result = rho * R
     return result
-
 
 def BERl(x, rho, muL, sigma):
     L = erfc((x - muL) / (sigma * np.sqrt(2)))
@@ -35,126 +39,42 @@ def BERlog(x, rho, muL, muR, sigma):
 def BERlogShift(x, rho, muL, muR, sigma, yshift):
     return (BERlog(x, rho, muL, muR, sigma) + yshift)
 
-class Pin():
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-class Link():
-
-    def __init__(self, txQuad, rxQuad, txPin, rxPin, x=(np.array([])), y=(np.array([]))):
-        self.txQuad = txQuad
-        self.rxQuad = rxQuad
-        self.txPin = Pin(int(re.sub(
-            'Y[0-9]*', '', txPin).replace('X', '')), int(re.sub('X[0-9]*Y', '', txPin)))
-        self.rxPin = Pin(int(re.sub(
-            'Y[0-9]*', '', rxPin).replace('X', '')), int(re.sub('X[0-9]*Y', '', rxPin)))
-        self.setXY(x, y)
-
-    def setXY(self, x, y):
-        self.x = x.copy()
-        self.y = y.copy()
-        self.yLog = np.array([np.log(y) for y in self.y])
-
-        if(len(self.y) > 0):
-            minY = min(self.y)
-
-        self.xpurge = np.array([x for x, y in zip(self.x, self.y) if y > minY])
-        self.ypurge = np.array([y for y in self.y if y > minY])
-        self.ylogpurge = np.array([np.log(y) for y in self.ypurge])
-
-
-#class BathTub():
-#    def __init__(self, fileName, txPath, rxPath):
-#
-#        self.fileName = fileName
-#        self.txPath = txPath
-#        self.rxPath = rxPath
-#
-#        # get quads
-#        txQuad = int(re.findall(
-#            'Quad_[0-9]*', self.txPath)[0].replace('Quad_', ''))
-#        rxQuad = int(re.findall(
-#            'Quad_[0-9]*', self.rxPath)[0].replace('Quad_', ''))
-#        txQuadPin = re.findall(
-#            'X[0-9]*Y[0-9]*', self.txPath)[0].replace('Quad_', '')
-#        rxQuadPin = re.findall(
-#            'X[0-9]*Y[0-9]*', self.rxPath)[0].replace('Quad_', '')
-#
-#        # get the data
-#        self.data = Link(
-#            txQuad,
-#            rxQuad,
-#            txQuadPin,
-#            rxQua`dPin
-#        )
-#
-#        # read the csv file
-#        csvFile = open(self.fileName)
-#        csvReader = csv.reader(csvFile)
-#
-#        rows = [r for r in csvReader]
-#
-#        # DC = 0/1
-#        self.dcId = int(re.findall(
-#            'DC[0-9]*', self.fileName)[0].replace('DC', '').split(' ')[0])
-#        # Connector ID = Rx0/Tx0 Rx1/Tx1....
-#        self.txConnectorId = int(re.findall(
-#            'Tx[0-9]*', self.fileName)[0].replace('Tx', ''))
-#        self.rxConnectorId = int(re.findall(
-#            'Rx[0-9]*', self.fileName)[0].replace('Rx', ''))
-#        # fiber channel ID = 0-11
-#        # print(self.fileName)
-#        self.txFiberId = int(re.findall(
-#            'tx[0-9]*', self.fileName)[0].replace('tx', ''))
-#        self.rxFiberId = int(re.findall(
-#            'rx[0-9]*', self.fileName)[0].replace('rx', ''))
-#
-#        for r in rows:
-#
-#            if r[0] == 'Scan Name':
-#                self.title = str(self.data.txQuad) + '_X' + \
-#                             str(self.data.txPin.x) + 'Y' + \
-#                             str(self.data.txPin.y) + '->X' + \
-#                             str(self.data.rxPin.x) + 'Y' + \
-#                             str(self.data.rxPin.y)
-#
-#            if r[0] == 'Dwell BER':
-#                self.dwellBER = float(r[-1])
-#            if r[0] == 'Horizontal Percentage':
-#                self.horizontalPercentage = float(r[-1])
-#            if r[0] == 'Horizontal Opening':
-#                self.horizontalOpening = float(r[-1])
-#
-#        tmp = np.array([[float(x), float(y)]
-#                        for x, y in zip(rows[19][1:], rows[20][1:])])
-#
-#        self.data.setXY(tmp[:, 0], tmp[:, 1])
-#
-#        if debug:
-#            print('self.filename', self.fileName)
-#            print('len(self.x   )', len(self.x))
-#            print('len(self.y   )', len(self.y))
-#            print('len(self.ylog)', len(self.ylog))
-#            print('len(self.xpurge   )', len(self.xpurge))
-#            print('len(self.ypurge   )', len(self.ypurge))
-#            print('len(self.ylogpurge)', len(self.ylogpurge))
-
-
 class Run:
     def __init__(self):
         self.dict = {}
 
     @classmethod
-    def fromFile(cls, filename):
-        r = cls()
-        r.loadFile(filename)
-        return r
-
-    @classmethod
     def fromDict(cls, dictionary):
         r = cls()
         r.dict = dictionary
+        return r
+
+    @classmethod
+    def fromJSON(cls, jsonEntry, path, comment=""):
+        r = cls()
+        
+        filename = jsonEntry[0]
+        config_entry = jsonEntry[1]
+        r.dict = config_entry
+        r.loadFile("%s/%s/%s.csv" % (path, config_entry['site'], filename))
+        r.dict['scanId'] = re.search("[0-9]*$", path).group()
+        try:
+            r.dict['txquad'] = int(re.search("Quad_([0-9]*)", config_entry['tx']).group(1))
+        except AttributeError:
+            pass
+        try:
+            r.dict['rxquad'] = int(re.search("Quad_([0-9]*)", config_entry['rx']).group(1))
+        except AttributeError:
+            pass
+        try:
+            r.dict['txpin'] = re.search("X[0-9]*Y[0-9]*", config_entry['tx']).group()
+        except AttributeError:
+            pass
+        try:
+            r.dict['rxpin'] = re.search("X[0-9]*Y[0-9]*", config_entry['rx']).group()
+        except AttributeError:
+            pass
+        r.dict['comment'] = comment
         return r
 
     def loadFile(self, filename):
@@ -177,33 +97,27 @@ class Run:
 
         for row in rows_iter :
             if row[0] == 'Scan Start':
-                next(rows_iter)
-                time = [int(j) for j in row[1:] ]
-                next(rows_iter)
-                BER =  [float(j) for j in row[1:]]
-                self.dict['data'] = {
-                    'time': time,
-                    'BER': BER
-                }
-                break
+                time = [int(j) for j in next(rows_iter)[1:] ]
+                BER =  [float(j) for j in next(rows_iter)[1:]]
+                self.dict['data'] = {'time': time,
+                                     'BER': BER }
+                
             else:
-                try:
-                    self.dict[ row[0] ] = int( row[1], 10 )
-                except ValueError:
+                if len(row)>1 :
                     try:
-                        self.dict[ row[0] ] = float( row[1] )
+                        self.dict[ row[0] ] = int( row[1], 10 )
                     except ValueError:
-                        self.dict[ row[0] ] = row[1]
+                        try:
+                            self.dict[ row[0] ] = float( row[1] )
+                        except ValueError:
+                            self.dict[ row[0] ] = row[1]
         
-        self.dict['start'] = datetime.strptime(
-            self.dict.pop('Date and Time Started'),
-            '%Y-%b-%d %H:%M:%S'
-        )
-        self.dict['end'] = datetime.strptime(
-            self.dict.pop('Date and Time Ended'),
-            '%Y-%b-%d %H:%M:%S'
-        )
-
+        self.dict['start'] = datetime.strptime( self.dict.pop('Date and Time Started'),
+                                                '%Y-%b-%d %H:%M:%S'               )
+        self.dict['end']   = datetime.strptime( self.dict.pop('Date and Time Ended'),
+                                                '%Y-%b-%d %H:%M:%S'
+                                            )
+        
         return self.dict
 
     def addNote(self, note):
@@ -275,16 +189,13 @@ class Run:
         return popt, pcov, edges, opening, openingPC
 
     def plotFitCurve(self, ax, fontsize=6):
-        # opt8, cor8, o8, o8opening, o8openingPC = self.getOpening(1e-8)
+        # get the opening at 1e-12
         opt12, cor12, o12, o12opening, o12openingPC = self.getOpening(1e-12)
 
         # fit and plot the fit_curve
         poptpl, pcovpl = self.fitPurgeLog()
         df = self.getDataFrame(purge=False)
         ax.plot(df['time'], BER(df['time'], *poptpl), '--', color=green)
-
-        # text lables
-        # ax.set_title(self.title, pad=-2, fontdict={'fontsize': fontsize})
 
         ax.text(
             0.1, 0.7,

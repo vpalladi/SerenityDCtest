@@ -13,6 +13,11 @@ from scan import scan
 
 import time
 
+# colours
+red = (0.75, 0, 0, 1)
+redAlpha = (0.75, 0, 0, 0.5)
+green = (0, 0.75, 0, 1)
+greenAlpha = (0, 0.75, 0, 0.5)
 
 # parser
 def main():
@@ -42,7 +47,7 @@ def main():
         help="The description of the coparison scan. Goes to the histo axis.",
         type='string', default='compare')
     parser.add_option(
-        "-f", "--fromFile", action='store_true', dest="fromFile",
+        "-f", "--fromFile", action='store_true', dest="fromJSON",
         help="Define the source of your data, default is DB.",
         default=False)
     parser.add_option(
@@ -65,7 +70,7 @@ def main():
               options.site,
               options.scanDescription,
               sort=scanSorting,
-              fromFile=options.fromFile
+              fromJSON=options.fromJSON
     )
 
     nRows = int(math.sqrt(s.getNlinks()))
