@@ -1,0 +1,242 @@
+/*
+
+Xilinx Vivado v2018.3 (64-bit) [Major: 2018, Minor: 3]
+SW Build: 2405991 on Thu Dec  6 23:36:41 MST 2018
+IP Build: 2404404 on Fri Dec  7 01:43:56 MST 2018
+
+Process ID (PID): 8554
+License: Customer
+
+Current time: 	Mon Oct 07 21:05:19 CEST 2019
+Time zone: 	Central European Standard Time (Europe/Zurich)
+
+OS: CentOS Linux release 7.7.1908 (Core)
+OS Version: 3.10.0-957.27.2.el7.x86_64
+OS Architecture: amd64
+Available processors (cores): 12
+
+Display: localhost:11.0
+Screen size: 1920x1080
+Screen resolution (DPI): 96
+Available screens: 1
+Available disk space: 625 GB
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+
+Java version: 	9.0.4 64-bit
+Java home: 	/opt/Xilinx/Vivado/2018.3/tps/lnx64/jre9.0.4
+Java executable location: 	/opt/Xilinx/Vivado/2018.3/tps/lnx64/jre9.0.4/bin/java
+Java initial memory (-Xms): 	128 MB
+Java maximum memory (-Xmx):	 3 GB
+
+
+User name: 	hwtest
+User home directory: /home/hwtest
+User working directory: /home/hwtest/vpalladi/packages
+User country: 	GB
+User language: 	en
+User locale: 	en_GB
+
+RDI_BASEROOT: /opt/Xilinx/Vivado
+HDI_APPROOT: /opt/Xilinx/Vivado/2018.3
+RDI_DATADIR: /opt/Xilinx/Vivado/2018.3/data
+RDI_BINDIR: /opt/Xilinx/Vivado/2018.3/bin
+
+Vivado preferences file location: /home/hwtest/.Xilinx/Vivado/2018.3/vivado.xml
+Vivado preferences directory: /home/hwtest/.Xilinx/Vivado/2018.3/
+Vivado layouts directory: /home/hwtest/.Xilinx/Vivado/2018.3/layouts
+PlanAhead jar file location: 	/opt/Xilinx/Vivado/2018.3/lib/classes/planAhead.jar
+Vivado log file location: 	/home/hwtest/vpalladi/packages/vivado.log
+Vivado journal file location: 	/home/hwtest/vpalladi/packages/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-8554-tjames-pc
+
+Xilinx Environment Variables
+----------------------------
+XILINX: /opt/Xilinx/Vivado/2018.3/ids_lite/ISE
+XILINXD_LICENSE_FILE: 2112@lxlicen01, 2112@lxlicen02, 2112@lxlicen03
+XILINX_DSP: /opt/Xilinx/Vivado/2018.3/ids_lite/ISE
+XILINX_PLANAHEAD: /opt/Xilinx/Vivado/2018.3
+XILINX_SDK: /opt/Xilinx/SDK/2018.3
+XILINX_VIVADO: /opt/Xilinx/Vivado/2018.3
+XILINX_VIVADO_HLS: /opt/Xilinx/Vivado/2018.3
+
+
+GUI allocated memory:	128 MB
+GUI max memory:		3,072 MB
+Engine allocated memory: 5,054 MB
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// WARNING: HEventQueue.dispatchEvent() is taking  1218 ms.
+// Tcl Message: start_gui 
+// WARNING: HEventQueue.dispatchEvent() is taking  1060 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1153 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 5,064 MB. GUI used memory: 45 MB. Current time: 10/7/19, 9:05:20 PM CEST
+selectButton(PAResourceEtoH.GettingStartedView_OPEN_HARDWARE_MANAGER, "Open Hardware Manager"); // x (w, cp)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl Command: 'rdi::info_commands get_hw_probes'
+// Tcl Command: 'load_features labtools'
+// TclEventType: LOAD_FEATURE
+// bx (cp):  Open Hardware Manager : addNotify
+// WARNING: HEventQueue.dispatchEvent() is taking  1871 ms.
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// Tcl Message: open_hw 
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_ADD
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_NEW
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified 
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 54 MB (+54306kb) [00:01:03]
+// [Engine Memory]: 5,164 MB (+5263133kb) [00:01:03]
+// WARNING: HEventQueue.dispatchEvent() is taking  1447 ms.
+// TclEventType: HW_SESSION_OPEN
+// Tcl Message: INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/opt/Xilinx/Vivado/2018.3/data/ip'. 
+// HMemoryUtils.trashcanNow. Engine heap size: 5,188 MB. GUI used memory: 49 MB. Current time: 10/7/19, 9:06:10 PM CEST
+// TclEventType: HW_SESSION_OPEN
+// [GUI Memory]: 91 MB (+36082kb) [00:01:05]
+// Tcl Message: open_hw: Time (s): cpu = 00:00:10 ; elapsed = 00:00:05 . Memory (MB): peak = 6567.297 ; gain = 158.215 ; free physical = 21394 ; free virtual = 55514 
+// 'Q' command handler elapsed time: 9 seconds
+// WARNING: HEventQueue.dispatchEvent() is taking  2338 ms.
+dismissDialog("Open Hardware Manager"); // bx (cp)
+// Elapsed time: 125 seconds
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (cQ, cp)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // af (al, cp)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// TclEventType: HW_SERVER_UPDATE
+// bx (cp):  Auto Connect : addNotify
+// WARNING: HEventQueue.dispatchEvent() is taking  1996 ms.
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: connect_hw_server 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2018.3   **** Build date : Dec  6 2018-23:53:53     ** Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   
+// TclEventType: HW_SERVER_UPDATE
+// TclEventType: HW_TARGET_CHANGE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210249A847C3 
+// Tcl Message: ERROR: [Labtools 27-2269] No devices detected on target localhost:3121/xilinx_tcf/Digilent/210249A847C3. Check cable connectivity and that the target board is powered up then use the disconnect_hw_server and connect_hw_server to re-register this hardware target. 
+// Tcl Message: ERROR: [Common 17-39] 'open_hw_target' failed due to earlier errors. 
+// CommandFailedException: ERROR: [Common 17-69] Command failed: ERROR: [Common 17-39] 'open_hw_target' failed due to earlier errors.  
+// a (cp): Critical Messages: addNotify
+dismissDialog("Auto Connect"); // bx (cp)
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK"); // f (a)
+dismissDialog("Critical Messages"); // a (cp)
+// PAPropertyPanels.initPanels (localhost:3121/xilinx_tcf/Digilent/210249A847C3) elapsed time: 0.2s
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "xilinx_tcf/Digilent/210249A847C3 (0) ; Open", 1, "xilinx_tcf/Digilent/210249A847C3 (0)", 0, false); // t (Q, cp)
+// WARNING: HEventQueue.dispatchEvent() is taking  1773 ms.
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "xilinx_tcf/Digilent/210249A847C3 (0) ; Open", 1, "xilinx_tcf/Digilent/210249A847C3 (0)", 0, false, false, false, false, true, false); // t (Q, cp) - Popup Trigger
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "xilinx_tcf/Digilent/210249A847C3 (0) ; Open", 1, "xilinx_tcf/Digilent/210249A847C3 (0)", 0, false); // t (Q, cp)
+// [GUI Memory]: 102 MB (+6446kb) [00:03:49]
+// Elapsed time: 324 seconds
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "xilinx_tcf/Digilent/210249A847C3 (0) ; Open", 1, "xilinx_tcf/Digilent/210249A847C3 (0)", 0, false, false, false, false, true, false); // t (Q, cp) - Popup Trigger
+selectMenuItem(PAResourceCommand.PACommandNames_CLOSE_TARGET, "Close Target"); // af (al, cp)
+// Run Command: PAResourceCommand.PACommandNames_CLOSE_TARGET
+// TclEventType: HW_TARGET_CLOSE
+// WARNING: HEventQueue.dispatchEvent() is taking  1136 ms.
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: close_hw_target {localhost:3121/xilinx_tcf/Digilent/210249A847C3} 
+// Tcl Message: INFO: [Labtoolstcl 44-464] Closing hw_target localhost:3121/xilinx_tcf/Digilent/210249A847C3 
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// bx (cp):  Close Target : addNotify
+// WARNING: HEventQueue.dispatchEvent() is taking  2230 ms.
+// TclEventType: DEBUG_PROBE_DELETE
+dismissDialog("Close Target"); // bx (cp)
+// WARNING: HEventQueue.dispatchEvent() is taking  1460 ms.
+// WARNING: HEventQueue.dispatchEvent() is taking  1433 ms.
+// Elapsed time: 200 seconds
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "xilinx_tcf/Digilent/210249A847C3 (0) ; Closed", 1, "xilinx_tcf/Digilent/210249A847C3 (0)", 0, false, false, false, false, true, false); // t (Q, cp) - Popup Trigger
+selectMenuItem(PAResourceCommand.PACommandNames_OPEN_TARGET, "Open Target"); // af (al, cp)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_TARGET
+// TclEventType: HW_TARGET_CHANGE
+// WARNING: HEventQueue.dispatchEvent() is taking  1698 ms.
+// Tcl Message: open_hw_target {localhost:3121/xilinx_tcf/Digilent/210249A847C3} 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210249A847C3 
+// Tcl Message: ERROR: [Labtools 27-2269] No devices detected on target localhost:3121/xilinx_tcf/Digilent/210249A847C3. Check cable connectivity and that the target board is powered up then use the disconnect_hw_server and connect_hw_server to re-register this hardware target. 
+// WARNING: HEventQueue.dispatchEvent() is taking  1606 ms.
+// bx (cp):  Open Target : addNotify
+// WARNING: HEventQueue.dispatchEvent() is taking  1372 ms.
+// Tcl Message: ERROR: [Common 17-39] 'open_hw_target' failed due to earlier errors. 
+// CommandFailedException: ERROR: [Common 17-69] Command failed: ERROR: [Common 17-39] 'open_hw_target' failed due to earlier errors.  
+dismissDialog("Open Target"); // bx (cp)
+// WARNING: HEventQueue.dispatchEvent() is taking  1232 ms.
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "localhost (1) ; Connected", 0, "localhost (1)", 0, true); // t (Q, cp) - Node
+// Elapsed time: 123 seconds
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "localhost (1) ; Connected", 0, "localhost (1)", 0, true, false, false, false, true, false); // t (Q, cp) - Popup Trigger - Node
+selectMenuItem(PAResourceCommand.PACommandNames_CLOSE_SERVER, "Close Server"); // af (al, cp)
+// Run Command: PAResourceCommand.PACommandNames_CLOSE_SERVER
+// TclEventType: HW_OBJECT_DELETE
+// WARNING: HEventQueue.dispatchEvent() is taking  1674 ms.
+// TclEventType: HW_OBJECT_DELETE
+// TclEventType: HW_SERVER_CLOSE
+// Tcl Message: disconnect_hw_server localhost:3121 
+// TclEventType: HW_SERVER_CLOSE
+// TclEventType: HW_TARGET_CLOSE
+// bx (cp):  Close Server : addNotify
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+dismissDialog("Close Server"); // bx (cp)
+// Elapsed time: 42 seconds
+selectButton(PAResourceOtoP.ProgramDebugTab_OPEN_TARGET, "Open target"); // h (cQ, cp)
+selectMenu(PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, "Recent Targets"); // ac (al, cp)
+selectMenu(PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, "Recent Targets"); // ac (al, cp)
+selectMenuItem(PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET, "Auto Connect"); // af (al, cp)
+// Run Command: PAResourceCommand.PACommandNames_AUTO_CONNECT_TARGET
+// TclEventType: HW_SERVER_UPDATE
+// WARNING: HEventQueue.dispatchEvent() is taking  1981 ms.
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: connect_hw_server 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 INFO: [Labtools 27-2222] Launching hw_server... INFO: [Labtools 27-2221] Launch Output:  ****** Xilinx hw_server v2018.3   **** Build date : Dec  6 2018-23:53:53     ** Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   
+// bx (cp):  Auto Connect : addNotify
+// TclEventType: HW_SERVER_UPDATE
+// TclEventType: HW_TARGET_CHANGE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210249A847C3 
+// Tcl Message: ERROR: [Labtools 27-2269] No devices detected on target localhost:3121/xilinx_tcf/Digilent/210249A847C3. Check cable connectivity and that the target board is powered up then use the disconnect_hw_server and connect_hw_server to re-register this hardware target. 
+// Tcl Message: ERROR: [Common 17-39] 'open_hw_target' failed due to earlier errors. 
+// CommandFailedException: ERROR: [Common 17-69] Command failed: ERROR: [Common 17-39] 'open_hw_target' failed due to earlier errors.  
+// a (cp): Critical Messages: addNotify
+dismissDialog("Auto Connect"); // bx (cp)
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK"); // f (a)
+dismissDialog("Critical Messages"); // a (cp)
+// [GUI Memory]: 108 MB (+362kb) [00:28:01]
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 50 MB. Current time: 10/7/19, 9:36:15 PM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 46 MB. Current time: 10/7/19, 10:06:15 PM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/7/19, 10:36:15 PM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/7/19, 11:06:15 PM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/7/19, 11:36:15 PM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 12:06:15 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 12:36:15 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 1:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 1:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 2:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 2:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 3:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 3:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 4:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 4:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 5:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 5:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 6:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 6:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 7:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 7:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 8:06:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 8:36:16 AM CEST
+// HMemoryUtils.trashcanNow. Engine heap size: 5,241 MB. GUI used memory: 45 MB. Current time: 10/8/19, 9:06:16 AM CEST
