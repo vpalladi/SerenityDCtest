@@ -4,7 +4,8 @@
 import math
 from optparse import OptionParser
 import numpy as np
-
+##import matplotlib
+##matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 # import matplotlib.collections as mc
 
@@ -107,7 +108,7 @@ def main():
                          options.siteCompare,
                          options.scanDescriptionCompare, 
                          sort=scanSorting,
-                         fromFile=option.fromFile
+                         fromJSON=options.fromJSON
         )
         s.compare( sCompare )
         fig2, ax2 = plt.subplots( 1, 

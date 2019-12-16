@@ -83,7 +83,7 @@ class Run:
 
         self.dict['baseBoard']      = re.findall( 'Serenity-[0-9]+',self.filename )[0] 
         self.dict['site']           = int( re.findall( 'site[0-9]+',self.filename )[0].replace('site','') )
-        self.dict['DC']             = re.findall( 'DC[0-9]+',self.filename )[0]
+        self.dict['DC']             = re.findall( 'DC[0-9A-Za-z\-]+',self.filename )[0]
         self.dict['TXconnector']    = re.findall( 'Tx[0-9]+',self.filename )[0]
         self.dict['RXconnector']    = re.findall( 'Rx[0-9]+',self.filename )[0]
         self.dict['connectionType'] = re.findall( '_[a-z]+:',self.filename )[0].replace(':','').replace('_','')
@@ -136,6 +136,10 @@ class Run:
                         return False
         return collection.insert_one(self.dict)
 
+    def getPath(self) :
+        str = self.dict['TXconnector']+'_'+self.dict['txChId']+'->'+self.dict['RXconnector']+'_'+self.dict['rxChId']
+        return str
+
     def getDataFrame(self, purge=False):
         if purge:
             if hasattr(self, 'purgedf'):
@@ -175,6 +179,7 @@ class Run:
             return self.popt, self.pcov
         df = self.getDataFrame(purge=True)
         start = (1, -27, 25, 1.2)
+        print(self.getPath())
         self.popt, self.pcov = curve_fit(BERlog, df['time'].values, df['logBER'].values, p0=start)
         return self.popt, self.pcov
 

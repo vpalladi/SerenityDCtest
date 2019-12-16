@@ -25,7 +25,6 @@ green = (0, 0.75, 0, 1)
 greenAlpha = (0, 0.75, 0, 0.5)
 
 
-
 # scanId: is the timestamp in case you want to read for DB and the path of the scan if you want to read from a folder
 class scan():
     def __init__(self, scanId, site, description='BER Scan', sort='rx', fromJSON=False):
@@ -63,6 +62,7 @@ class scan():
         with open( path + '/config.json' ) as cfg_file:
                 cfg = json.load( cfg_file )
                 for item in cfg.items():
+
                     print (item[0])
                     if item[1]['site'].replace('site', '') == site.replace('site', ''):
                         scans.append( run.Run.fromJSON( item, path, comment='' ) )
@@ -91,7 +91,7 @@ class scan():
         ax.set_yscale('log')
         ax.set_ylabel('BER')
         ax.set_xlabel('a.u.')
-
+        ax.title.set_text( self.scans[linkId].getPath() )
    
     def getBERfitPlot(self, linkId, ax):
 
