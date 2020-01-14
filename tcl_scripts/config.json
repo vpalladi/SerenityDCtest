@@ -2,7 +2,7 @@
 {
     "JTAG" : { 
         "type"   : "Header",
-        "JTAGid" : "Digilent/210249A847C3",
+        "JTAGid" : "Digilent/210249A8479E",
         "host"   : "localhost:3121"    
     },
 
@@ -23,15 +23,15 @@
             "connectionType" : "Cu12",
             "sideA" : { "site"      : "X0",
                      "connector" : "socket7" },
-            "sideB" : { "site"      : "X1",
+            "sideB" : { "site"      : "X0",
                      "connector" : "socket8" }
         },
         "connectionB" : { 
             "connectionType" : "Cu12", 
-            "sideA" : { "site"      : "X1",
-                     "connector" : "socket7" },
+            "sideA" : { "site"      : "X0",
+                     "connector" : "socket9" },
             "sideB" : { "site"      : "X0",
-                     "connector" : "socket8" }
+                     "connector" : "socket10" }
         }
     }
 
