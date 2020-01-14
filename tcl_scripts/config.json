@@ -1,0 +1,39 @@
+
+{
+    "JTAG" : { 
+        "type"   : "Header",
+        "JTAGid" : "Digilent/210249A847C3",
+        "host"   : "localhost:3121"    
+    },
+
+    "BaseBoard" : "Serenity-12",
+    "DCs" : {
+        "X0" : { 
+            "id" : "004",
+            "type" : "sm1_v1"
+        },
+        "X1" : { 
+            "id" : "005",
+            "type" : "sm1_v1"
+        }
+    },
+
+    "connections" : { 
+        "connectionA" : {
+            "connectionType" : "Cu12",
+            "sideA" : { "site"      : "X0",
+                     "connector" : "socket7" },
+            "sideB" : { "site"      : "X1",
+                     "connector" : "socket8" }
+        },
+        "connectionB" : { 
+            "connectionType" : "Cu12", 
+            "sideA" : { "site"      : "X1",
+                     "connector" : "socket7" },
+            "sideB" : { "site"      : "X0",
+                     "connector" : "socket8" }
+        }
+    }
+
+}
+
