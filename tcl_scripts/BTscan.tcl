@@ -1,7 +1,7 @@
 
 ### which precision ###
 
-set dwell_ber 1e-9
+set dwell_ber 1e-5
 
 ######################
 
@@ -32,11 +32,11 @@ set foldername "/home/hwtest/vpalladi/$folderName"
 
 # generate the folders 
 exec mkdir -p -- $folderName
-exec mkdir -p -- $folderName/site0
-exec mkdir -p -- $folderName/site1
+exec mkdir -p -- $folderName/X0
+exec mkdir -p -- $folderName/X1
 
 # open the out file to store the configuration 
-set fout [open ./config.json w]
+set fout [open ./configuration_summary.json w]
 puts $fout "{"
 
 ### get links 
@@ -52,9 +52,10 @@ foreach group $groups {
 
     set groupName [get_property DESCRIPTION $group]
     set tmp [ lindex [split $groupName ":"] 0 ]
-    set baseBoard [ lindex [ split $tmp "_" ] 0 ]
-    set site [ lindex [ split $tmp "_" ] 1 ]
-    set DC [ lindex [ split $tmp "_" ] 2 ]
+    set baseBoard [ lindex [ split $tmp "-" ] 0 ]
+    set connectionType [ lindex [ split $tmp "-" ] 1 ]
+    #set site [ lindex [ split $tmp "_" ] 1 ]
+    #set DC [ lindex [ split $tmp "_" ] 2 ]
     set links [get_hw_sio_links -of_objects [get_hw_sio_linkgroups $group]]
     
     foreach link $links {
@@ -62,7 +63,17 @@ foreach group $groups {
         # from link name define scan name
         set linkName [get_property DESCRIPTION $link]
         set scanName "Scan $groupName $linkName"
-	
+        
+        # get the DCs info
+        set linkName [ lindex [ split $linkName " " ] 1 ]
+        set tx [ lindex [ split $linkName ":" ] 0 ]
+        set rx [ lindex [ split $linkName ":" ] 1 ]
+        set DCtx [ dict create site [lindex [ split $tx "-"] 0 ] type [lindex [ split $tx "-"] 1 ] id [lindex [ split $tx "-"] 2 ] ]
+        set DCrx [ dict create site [lindex [ split $rx "-"] 0 ] type [lindex [ split $rx "-"] 1 ] id [lindex [ split $rx "-"] 2 ] ]
+        
+        # the site is the TX site
+        set site [ dict get $DCtx site ]
+
         # get all qplls and their status
 	set QPLLs [ get_hw_sio_plls -of_objects [ get_hw_sio_commons -of_objects [ get_hw_sio_gtgroup -of_objects [ get_hw_sio_gts -of_objects [get_hw_sio_links $link] ] ] ] ]
 
@@ -72,23 +83,21 @@ foreach group $groups {
         set txEndpoint [ get_property TX_ENDPOINT $link ]
         set tx [ get_property TX_ENDPOINT $link ]
         set rxEndpoint [ get_property RX_ENDPOINT $link ]
-        
 	
         # do not scan if pll is not locked, report it instead
 	if { $PLL0status == "NOT LOCKED"  } {
 	    puts "WARNING wrong PLL status ($scanName): PLL0 is $PLL0status, PLL1 is $PLL1status"
 	} else {
-	    set xil_newScan [create_hw_sio_scan -description $scanName  1d_bathtub  [lindex [get_hw_sio_links $link] ] ]
-	    set_property HORIZONTAL_INCREMENT {1} [get_hw_sio_scans $xil_newScan]
-	    set_property DWELL_BER $dwell_ber [get_hw_sio_scans $xil_newScan]
-
+            set xil_newScan [create_hw_sio_scan -description $scanName  1d_bathtub  [lindex [get_hw_sio_links $link] ] ]
+            set_property HORIZONTAL_INCREMENT {1} [get_hw_sio_scans $xil_newScan]
+            set_property DWELL_BER $dwell_ber [get_hw_sio_scans $xil_newScan]
+            
 	    # run the scan! :) 
-	    run_hw_sio_scan [get_hw_sio_scans $xil_newScan]
-	    wait_on_hw_sio_scan [get_hw_sio_scans $xil_newScan]
-        
+            run_hw_sio_scan [get_hw_sio_scans $xil_newScan]
+            wait_on_hw_sio_scan [get_hw_sio_scans $xil_newScan]
+            
 	    # save the scan! :D
-	    write_hw_sio_scan -force "$folderName/$site/$scanName" [get_hw_sio_scans $xil_newScan]
-
+            write_hw_sio_scan -force "$folderName/$site/$scanName" [get_hw_sio_scans $xil_newScan]            
         }
 
         set status      [ get_property STATUS          $link ]
@@ -98,22 +107,42 @@ foreach group $groups {
         set rx_polarity [ get_property PORT.RXPOLARITY $link ]
         set DFE_enabled [ get_property RXDFEENABLED    $link ]
 
+        set text ""
+
         if { $i > 0 } {
-            puts $fout "\},"
+            append text "\},\n"
         }
-        puts $fout "\"$scanName\" : \{"
+        append text "\"$scanName\" : \{\n"
+        append text "\"baseBoard\" : \"$baseBoard\",\n"
         
-        puts $fout "\"baseBoard\" : \"$baseBoard\","
-        puts $fout "\"site\" : \"$site\","
-        puts $fout "\"DC\" : \"$DC\","
-        puts $fout "\"status\" : \"$status\", "
-        puts $fout "\"DFE\" : \"$DFE_enabled\", "
-        puts $fout "\"tx\" : \"$txEndpoint\"," 
-        puts $fout "\"txPolarity\" : \"$tx_polarity\", "
-        puts $fout "\"txPattern\" : \"$tx_pattern\", "
-        puts $fout "\"rx\" : \"$rxEndpoint\", "
-        puts $fout "\"rxPolarity\" : \"$rx_polarity\", "
-        puts $fout "\"rxPattern\" : \"$rx_pattern\" "
+        append text "\"DCtx\" : \{ "
+        append text "\"site\" : \""
+        append text [ dict get $DCtx site ]
+        append text "\", \"type\" : \""
+        append text [ dict get $DCtx type ]
+        append text "\", \"id\" : \""
+        append text [ dict get $DCtx id ]
+        append text "\" \},\n"
+        
+        append text "\"DCrx\" : \{ "
+        append text "\"site\" : \""
+        append text [ dict get $DCrx site ]
+        append text "\", \"type\" : \""
+        append text [ dict get $DCrx type ]
+        append text "\", \"id\" : \""
+        append text [ dict get $DCrx id ]
+        append text "\" \},\n"
+        
+        append text "\"status\" : \"$status\", \n"
+        append text "\"DFE\" : \"$DFE_enabled\", \n"
+        append text "\"tx\" : \"$txEndpoint\",\n" 
+        append text "\"txPolarity\" : \"$tx_polarity\", \n"
+        append text "\"txPattern\" : \"$tx_pattern\", \n"
+        append text "\"rx\" : \"$rxEndpoint\", \n"
+        append text "\"rxPolarity\" : \"$rx_polarity\", \n"
+        append text "\"rxPattern\" : \"$rx_pattern\" \n"
+
+        puts $fout $text
 
         incr i
 	
@@ -124,4 +153,4 @@ puts $fout "\}"
 puts $fout "\}"
 close $fout
 
-exec mv ./config.json $folderName
+exec mv ./configuration_summary.json $folderName

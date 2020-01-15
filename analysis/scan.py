@@ -32,14 +32,14 @@ class scan():
         # info
         self.scanId = scanId
         self.description = description
-        self.site = 'site' + site
+        self.site = 'X' + site
         self.scans = []
 
         # get the scans from JSON
         if fromJSON :
             self.scans = self.loadScan( self.scanId, self.site )
         else :
-            self.scans = db.query( {'timestamp' : self.scanId, 'site' : self.site} )
+            self.scans = db.query( {'timestamp' : self.scanId, 'X' : self.site} )
 
         # sort the scans
         if sort == 'rx':
@@ -56,16 +56,21 @@ class scan():
         self.openingAtDwell = self.getOpening(self.getDwell())
         self.openingAt1em12 = self.getOpening(
             [1.e-12 for i in range(0, len(self.scans))])
-        
+ 
+        exit
+      
     def loadScan(self, path, site, comment="" ):
         scans = []
-        with open( path + '/config.json' ) as cfg_file:
+        with open( path + '/configuration_summary.json' ) as cfg_file:
                 cfg = json.load( cfg_file )
                 for item in cfg.items():
-
-                    print (item[0])
-                    if item[1]['site'].replace('site', '') == site.replace('site', ''):
+                    
+                    if item[1]['status'] == 'NO LINK' :
+                        continue
+                    
+                    if item[1]['DCtx']['site'].replace('X', '') == site.replace('X', ''):
                         scans.append( run.Run.fromJSON( item, path, comment='' ) )
+                        
         return scans
                     
     def getDwell(self):

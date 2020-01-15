@@ -56,8 +56,9 @@ class Run:
         filename = jsonEntry[0]
         config_entry = jsonEntry[1]
         r.dict = config_entry
-        r.loadFile("%s/%s/%s.csv" % (path, config_entry['site'], filename))
+        r.loadFile("%s/%s/%s.csv" % (path, config_entry['DCtx']['site'], filename))
         r.dict['scanId'] = re.search("[0-9]*$", path).group()
+        
         try:
             r.dict['txquad'] = int(re.search("Quad_([0-9]*)", config_entry['tx']).group(1))
         except AttributeError:
@@ -78,18 +79,23 @@ class Run:
         return r
 
     def loadFile(self, filename):
-
         self.filename = filename
 
-        self.dict['baseBoard']      = re.findall( 'Serenity-[0-9]+',self.filename )[0] 
-        self.dict['site']           = int( re.findall( 'site[0-9]+',self.filename )[0].replace('site','') )
-        self.dict['DC']             = re.findall( 'DC[0-9A-Za-z\-]+',self.filename )[0]
-        self.dict['TXconnector']    = re.findall( 'Tx[0-9]+',self.filename )[0]
-        self.dict['RXconnector']    = re.findall( 'Rx[0-9]+',self.filename )[0]
-        self.dict['connectionType'] = re.findall( '_[a-z]+:',self.filename )[0].replace(':','').replace('_','')
-        self.dict['txChId']         = re.findall( 'tx[0-9]+',self.filename )[0]
-        self.dict['rxChId']         = re.findall( 'rx[0-9]+',self.filename )[0]
+        
+        tx = self.filename.replace('.csv', '').split(' Link ')[1].split(':')[0].split('-')
+        rx = self.filename.replace('.csv', '').split(' Link ')[1].split(':')[1].split('-')
 
+        self.dict['baseBoard']      = re.findall( 'Serenity_[0-9]+',self.filename )[0] 
+        self.dict['txSite']         = int( tx[0].replace('X','') )
+        self.dict['rxSite']         = int( rx[0].replace('X','') )
+        self.dict['txDC']           = tx[1]+'_'+tx[2]
+        self.dict['rxDC']           = rx[1]+'_'+rx[2]
+        self.dict['txConnector']    = tx[3]
+        self.dict['rxConnector']    = rx[3]
+        self.dict['txChId']         = tx[4]
+        self.dict['rxChId']         = rx[4]
+        self.dict['connectionType'] = self.filename.split(' Link ')[0].split(':')[0].split('-')[1]
+        
         ### read the csv file
         csvFile = open(self.filename)
         csvReader = csv.reader(csvFile)
@@ -137,7 +143,7 @@ class Run:
         return collection.insert_one(self.dict)
 
     def getPath(self) :
-        str = self.dict['TXconnector']+'_'+self.dict['txChId']+'->'+self.dict['RXconnector']+'_'+self.dict['rxChId']
+        str = self.dict['txConnector']+'_'+self.dict['txChId']+'->'+self.dict['rxConnector']+'_'+self.dict['rxChId']
         return str
 
     def getDataFrame(self, purge=False):
