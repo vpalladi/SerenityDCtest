@@ -1,0 +1,27 @@
+{
+    
+    "BaseBoard" : "Serenity-06",
+    "JTAG" : {
+        "JTAGid" : "Digilent/210249A8479E",
+        "host"   : "localhost:3121"
+    },
+    "DCs" : { 
+    "X0" : { "type" : "sm1_v1",
+             "id" : "005",
+           },
+    "X1" : { "type" : "sm1_v1",
+             "id" : "004",
+           }
+    },
+    "connections" : {
+        "connectionA" : { "connectionType" : "Cu12",
+                          "sideA" : { "site" : "X0",
+                                      "connector" : "socket1" 
+                                    },
+                          "sideB" : { "site" : "X0",
+                                      "connector" : "socket2" 
+                                    }
+                        }
+    }
+     
+}
