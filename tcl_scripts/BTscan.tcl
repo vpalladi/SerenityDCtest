@@ -32,8 +32,7 @@ set foldername "/home/hwtest/vpalladi/$folderName"
 
 # generate the folders 
 exec mkdir -p -- $folderName
-exec mkdir -p -- $folderName/X0
-exec mkdir -p -- $folderName/X1
+exec mkdir -p -- $folderName/data
 
 # open the out file to store the configuration 
 set fout [open ./configuration_summary.json w]
@@ -97,7 +96,7 @@ foreach group $groups {
             wait_on_hw_sio_scan [get_hw_sio_scans $xil_newScan]
             
 	    # save the scan! :D
-            write_hw_sio_scan -force "$folderName/$site/$scanName" [get_hw_sio_scans $xil_newScan]            
+            write_hw_sio_scan -force "$folderName/data/$scanName" [get_hw_sio_scans $xil_newScan]            
         }
 
         set status      [ get_property STATUS          $link ]

@@ -46,12 +46,14 @@ set configRaw [read $configFileIn]
 
 set config [ ::json::json2dict $configRaw ]
 
-set baseBoard   [ dict get $config BaseBoard ]
-set DCs         [ dict get $config DCs ]
+set baseBoard     [ dict get $config BaseBoard ]
+set DCs           [ dict get $config DCs ]
 
-set JTAG        [ dict get $config JTAG ]
-set JTAGid      [ dict get $JTAG JTAGid ]
-set host        [ dict get $JTAG host ]
+set hwConnections [ dict get $config hardwareConnections ]
+
+set JTAG          [ dict get $config JTAG ]
+set JTAGid        [ dict get $JTAG JTAGid ]
+set host          [ dict get $JTAG host ]
 
 set pathBase "$host/xilinx_tcf/$JTAGid"
 
@@ -64,13 +66,15 @@ dict for { id c } $connections {
     
     set connectionType [ dict get $c connectionType ]
 
-    set siteA         [ dict get [ dict get $c sideA ] site ]
-    set connectorA    [ dict get [ dict get $c sideA ] connector ]
-    set daughterCardA [ dict get $DCs $siteA ]
-    set socketA       [ dict get [dict get $connectivity [dict get $daughterCardA type] ] $connectorA] 
+    set siteA           [ dict get [ dict get $c sideA ] site ]
+    set connectorAlogic [ dict get [ dict get $c sideA ] connector ]
+    set connectorA      [ dict get $hwConnections $connectorAlogic ]
+    set daughterCardA   [ dict get $DCs $siteA ]
+    set socketA         [ dict get [dict get $connectivity [dict get $daughterCardA type] ] $connectorA] 
     
     set siteB         [ dict get [ dict get $c sideB ] site ]
-    set connectorB    [ dict get [ dict get $c sideB ] connector ]
+    set connectorBlogic [ dict get [ dict get $c sideB ] connector ]
+    set connectorB      [ dict get $hwConnections $connectorBlogic ]
     set daughterCardB [ dict get $DCs $siteB ]
     set socketBtmp    [ dict get [dict get $connectivity [dict get $daughterCardB type] ] $connectorB] 
     
@@ -133,12 +137,14 @@ dict for { id c } $connections {
             set rxMGT $MGTa
             set rxMGTtype $MGTaType
             set rxSite [ string map {"X" ""} $siteA ]
+            set rxConnectorLogic $connectorAlogic
             set rxConnector $connectorA
             set rxSocketLineId $socketLineIdA
             # B is TX
             set txMGT $MGTb
             set txMGTtype $MGTbType
             set txSite [ string map {"X" ""} $siteB]
+            set txConnectorLogic $connectorBlogic
             set txConnector $connectorB
             set txSocketLineId $socketLineIdB
         } elseif { [ string first "TX" $MGTa ] != -1 && [ string first "RX" $MGTb ] != -1 } {
@@ -146,12 +152,14 @@ dict for { id c } $connections {
             set rxMGT $MGTb
             set rxMGTtype $MGTbType
             set rxSite [ string map {"X" ""} $siteB ] 
+            set rxConnectorLogic $connectorBlogic
             set rxConnector $connectorB
             set rxSocketLineId $socketLineIdB
             # A is TX
             set txMGT $MGTa
             set txMGTtype $MGTaType
             set txSite [ string map {"X" ""} $siteA ]
+            set txConnectorLogic $connectorAlogic
             set txConnector $connectorA
             set txSocketLineId $socketLineIdA
         
@@ -174,7 +182,7 @@ dict for { id c } $connections {
         set txPath "$pathBase/$txSite$txMGTid/$txMGT"
         set rxPath "$pathBase/$rxSite$rxMGTid/$rxMGT"
 
-        set description "Link X$txSite-$txDCtype-$txDCid-$txConnector-$txSocketLineId:X$rxSite-$rxDCtype-$rxDCid-$rxConnector-$rxSocketLineId"
+        set description "Link X$txSite-$txDCtype-$txDCid-$txConnectorLogic-$txSocketLineId:X$rxSite-$rxDCtype-$rxDCid-$rxConnectorLogic-$rxSocketLineId"
         #######puts $description
         
         # generate the link
@@ -184,7 +192,7 @@ dict for { id c } $connections {
     }
 
     # group links
-    set groupDescription "$baseBoard-$connectionType:$siteA-$connectorA<->$siteB-$connectorB"
+    set groupDescription "$baseBoard-$connectionType:$siteA-$connectorAlogic<->$siteB-$connectorBlogic"
     puts $groupDescription
     set xil_newLinkGroup [create_hw_sio_linkgroup -description $groupDescription [get_hw_sio_links $xil_newLinks]]
     unset xil_newLinks
