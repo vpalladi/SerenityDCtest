@@ -1,5 +1,5 @@
 {
-    
+
     "BaseBoard" : "Serenity_06",
     "JTAG" : {
         "JTAGid" : "Digilent/210249A8479E",
@@ -28,8 +28,8 @@
         "Tx5"    : "socket11" ,
         "Rx5"    : "socket12" ,
         "ext"    : "socket13" ,
-        "intra1" : "hsb0"     ,
-        "intra2" : "hsb1"     
+        "intraRx": "hsb0"     ,
+        "intraTx": "hsb1"     
      },
     "connections" : {
         "connectionX0_A" : { "connectionType" : "Cu12",
@@ -80,21 +80,69 @@
                                          "connector" : "Tx5" 
                                        }
                            },
-        "connectionX1_X0_A" : { "connectionType" : "hsb",
-                              "sideA" : { "site" : "X0",
-                                          "connector" : "intra1" 
-                                        },
-                              "sideB" : { "site" : "X1",
-                                          "connector" : "intra2" 
-                                        }
-                            },
-        "connectionX1_X0_B" : { "connectionType" : "hsb",
-                              "sideA" : { "site" : "X1",
-                                          "connector" : "intra1" 
-                                        },
-                              "sideB" : { "site" : "X0",
-                                          "connector" : "intra2" 
-                                        }
+        "connection_X1_X0_A" : { "connectionType" : "hsb",
+                                 "sideA" : { "site" : "X0",
+                                             "connector" : "intraRx" 
+                                           },
+                                 "sideB" : { "site" : "X1",
+                                             "connector" : "intraTx" 
+                                           }
+                               },
+        "connectionX1_A" : { "connectionType" : "Cu12",
+                             "sideA" : { "site" : "X1",
+                                         "connector" : "Rx0" 
+                                       },
+                             "sideB" : { "site" : "X1",
+                                         "connector" : "Tx0" 
+                                       }
+                           },
+        "connectionX1_B" : { "connectionType" : "Cu12",
+                             "sideA" : { "site" : "X1",
+                                         "connector" : "Rx1" 
+                                       },
+                             "sideB" : { "site" : "X1",
+                                         "connector" : "Tx1" 
+                                       }
+                           },
+        "connectionX1_C" : { "connectionType" : "Cu12",
+                             "sideA" : { "site" : "X1",
+                                         "connector" : "Rx2" 
+                                       },
+                             "sideB" : { "site" : "X1",
+                                         "connector" : "Tx2" 
+                                       }
+                           },
+        "connectionX1_D" : { "connectionType" : "Cu12",
+                             "sideA" : { "site" : "X1",
+                                         "connector" : "Rx3" 
+                                       },                 
+                             "sideB" : { "site" : "X1",   
+                                         "connector" : "Tx3" 
+                                       }
+                             },
+        "connectionX1_E" : { "connectionType" : "Cu12",
+                             "sideA" : { "site" : "X1",
+                                         "connector" : "Rx4" 
+                                       },                 
+                             "sideB" : { "site" : "X1",   
+                                         "connector" : "Tx4" 
+                                       }
+                             },
+        "connectionX1_F" : { "connectionType" : "Cu12",
+                             "sideA" : { "site" : "X1",
+                                         "connector" : "Rx5" 
+                                       },                 
+                             "sideB" : { "site" : "X1",   
+                                         "connector" : "Tx5" 
+                                       }
+                           },
+        "connection_X1_X0_B" : { "connectionType" : "hsb",
+                                 "sideA" : { "site" : "X1",
+                                             "connector" : "intraRx" 
+                                           },
+                                 "sideB" : { "site" : "X0",
+                                             "connector" : "intraTx" 
+                                           }
                             }
         
     }

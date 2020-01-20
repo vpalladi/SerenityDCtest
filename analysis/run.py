@@ -52,11 +52,11 @@ class Run:
     @classmethod
     def fromJSON(cls, jsonEntry, path, comment=""):
         r = cls()
-        
+
         filename = jsonEntry[0]
         config_entry = jsonEntry[1]
         r.dict = config_entry
-        r.loadFile("%s/%s/%s.csv" % (path, config_entry['DCtx']['site'], filename))
+        r.loadFile("%s/data/%s.csv" % (path, filename))
         r.dict['scanId'] = re.search("[0-9]*$", path).group()
         
         try:
@@ -85,7 +85,7 @@ class Run:
         tx = self.filename.replace('.csv', '').split(' Link ')[1].split(':')[0].split('-')
         rx = self.filename.replace('.csv', '').split(' Link ')[1].split(':')[1].split('-')
 
-        self.dict['baseBoard']      = re.findall( 'Serenity_[0-9]+',self.filename )[0] 
+        self.dict['baseBoard']      = re.findall( 'Serenity[-_][0-9]+',self.filename )[0] 
         self.dict['txSite']         = int( tx[0].replace('X','') )
         self.dict['rxSite']         = int( rx[0].replace('X','') )
         self.dict['txDC']           = tx[1]+'_'+tx[2]
@@ -143,8 +143,8 @@ class Run:
         return collection.insert_one(self.dict)
 
     def getPath(self) :
-        str = self.dict['txConnector']+'_'+self.dict['txChId']+'->'+self.dict['rxConnector']+'_'+self.dict['rxChId']
-        return str
+        string = 'X'+str(self.dict['txSite'])+'_'+self.dict['txConnector']+'_'+self.dict['txChId']+'->'+'X'+str(self.dict['rxSite'])+'_'+self.dict['rxConnector']+'_'+self.dict['rxChId']
+        return string
 
     def getDataFrame(self, purge=False):
         if purge:
@@ -185,7 +185,6 @@ class Run:
             return self.popt, self.pcov
         df = self.getDataFrame(purge=True)
         start = (1, -27, 25, 1.2)
-        print(self.getPath())
         self.popt, self.pcov = curve_fit(BERlog, df['time'].values, df['logBER'].values, p0=start)
         return self.popt, self.pcov
 
