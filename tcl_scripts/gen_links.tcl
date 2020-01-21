@@ -29,7 +29,6 @@ set MGTtypeId [ dict create GTH "_1_0_0/IBERT" GTY "_1_0_55/IBERT" ]
 
 # open files
 set tclBase  "/home/hwtest/vpalladi/SerenityDCtest/tcl_scripts"
-set tclBase "/home/ahoward/DCTesting/SerenityDCtest_new/tcl_scripts"
 
 set configFileName "$tclBase/connections_config.json"
 set ku15p_sm1_v2_fileName "$tclBase/ku15p_sm1_v2_connectivity.json"
@@ -80,11 +79,11 @@ dict for { id c } $connections {
     set daughterCardA   [ dict get $DCs $siteA ]
     set socketA         [ dict get [dict get $connectivity [dict get $daughterCardA type] ] $connectorA] 
     
-    set siteB         [ dict get [ dict get $c sideB ] site ]
+    set siteB           [ dict get [ dict get $c sideB ] site ]
     set connectorBlogic [ dict get [ dict get $c sideB ] connector ]
     set connectorB      [ dict get $hwConnections $connectorBlogic ]
-    set daughterCardB [ dict get $DCs $siteB ]
-    set socketBtmp    [ dict get [dict get $connectivity [dict get $daughterCardB type] ] $connectorB] 
+    set daughterCardB   [ dict get $DCs $siteB ]
+    set socketBtmp      [ dict get [dict get $connectivity [dict get $daughterCardB type] ] $connectorB] 
     
     ## invert lines on the fiber/bundle if needed
     set socketB []
@@ -191,13 +190,14 @@ dict for { id c } $connections {
         set rxPath "$pathBase/$rxSite$rxMGTid/$rxMGT"
 
         set description "Link X$txSite-$txDCtype-$txDCid-$txConnectorLogic-$txSocketLineId:X$rxSite-$rxDCtype-$rxDCid-$rxConnectorLogic-$rxSocketLineId"
+        puts $description
         #######puts $description
         
         # generate the link
         set xil_newLink [create_hw_sio_link -description $description [lindex [get_hw_sio_txs $txPath] 0] [lindex [get_hw_sio_rxs $rxPath] 0] ]
         lappend xil_newLinks $xil_newLink
-        
-    }
+       
+   }
 
     # group links
     set groupDescription "$baseBoard-$connectionType:$siteA-$connectorAlogic<->$siteB-$connectorBlogic"
