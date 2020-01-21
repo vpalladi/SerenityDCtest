@@ -1,7 +1,7 @@
 
 ### which precision ###
 
-set dwell_ber 1e-5
+set dwell_ber 1e-8
 
 ######################
 
