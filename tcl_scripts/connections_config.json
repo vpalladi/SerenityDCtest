@@ -1,16 +1,15 @@
 {
-
-    "BaseBoard" : "Serenity_06",
+    "BaseBoard" : "Serenity_12",
     "JTAG" : {
         "JTAGid" : "Digilent/210249A8479E",
         "host"   : "localhost:3121"
     },
     "DCs" : { 
-    "X0" : { "type" : "sm1_v1",
-             "id" : "005",
+    "X0" : { "type" : "sm1_v2",
+             "id" : "a-001",
            },
-    "X1" : { "type" : "sm1_v1",
-             "id" : "004",
+    "X1" : { "type" : "sm1_v2",
+             "id" : "a-002",
            }
     },
     "hardwareConnections" : {
@@ -144,7 +143,6 @@
                                              "connector" : "intraTx" 
                                            }
                             }
-        
     }
      
 }
