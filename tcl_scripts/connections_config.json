@@ -6,11 +6,11 @@
         "host"   : "localhost:3121"
     },
     "DCs" : { 
-    "X0" : { "type" : "sm1_v1",
-             "id" : "a-004",
+    "X0" : { "type" : "sm1_v2",
+             "id" : "a-001",
            },
-    "X1" : { "type" : "sm1_v1",
-             "id" : "a-003",
+    "X1" : { "type" : "sm1_v2",
+             "id" : "a-002",
            }
     },
     "hardwareConnections" : {

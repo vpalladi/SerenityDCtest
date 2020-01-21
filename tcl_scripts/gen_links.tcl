@@ -32,12 +32,12 @@ set tclBase  "/home/hwtest/vpalladi/SerenityDCtest/tcl_scripts"
 set tclBase "/home/ahoward/DCTesting/SerenityDCtest_new/tcl_scripts"
 
 set configFileName "$tclBase/connections_config.json"
-set ku15p_sm1_v1_fileName "$tclBase/ku15p_sm1_v1_connectivity.json"
+set ku15p_sm1_v2_fileName "$tclBase/ku15p_sm1_v2_connectivity.json"
 set ku15p_so1_v1_fileName "$tclBase/ku15p_so1_v1_connectivity.json"
 
 set configFileIn [open $configFileName r]
 set connectivity [dict create \
-                      sm1_v1 [ ::json::json2dict [read [open $ku15p_sm1_v1_fileName r] ] ] \
+                      sm1_v2 [ ::json::json2dict [read [open $ku15p_sm1_v2_fileName r] ] ] \
                       so1_v1 [ ::json::json2dict [read [open $ku15p_so1_v1_fileName r] ] ] \
                       # ----->>>>> add here any configuration: e.g. VU9P and sm1_v2
                  ]
