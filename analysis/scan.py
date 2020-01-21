@@ -26,31 +26,34 @@ greenAlpha = (0, 0.75, 0, 0.5)
 
 
 # scanId: is the timestamp in case you want to read for DB and the path of the scan if you want to read from a folder
+# transciever: is definig which of the Rx/Tx consider  
 class scan():
-    def __init__(self, scanId, site, description='BER Scan', sort='rx', fromJSON=False):
+#    def __init__(self, scanId, site, description='BER Scan', sort='rx', fromJSON=False):
+    def __init__(self, scanId, site, transciever='rx', description='BER Scan', fromJSON=False):
 
         # info
         self.scanId = scanId
         self.description = description
         self.site = 'X' + site
+        self.transciever = transciever
         self.scans = []
 
         # get the scans from JSON
         if fromJSON :
-            self.scans = self.loadScan( self.scanId, self.site )
+            self.scans = self.loadScan( self.scanId, self.site, self.transciever )
         else :
             self.scans = db.query( {'timestamp' : self.scanId, 'X' : self.site} )
 
-        # sort the scans
-        if sort == 'rx':
-            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['rxpin'] )[0].replace('Y', '') ) )
-            self.scans.sort( key=lambda s: s.dict['rxquad'] )
-        elif sort == 'tx':
-            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['txpin'] )[0].replace('Y', '') ) )
-            self.scans.sort( key=lambda s: s.dict['txquad'] )
-        else:
-            print('Error: sorting for scans not suppoerted.')
-            exit()
+#        # sort the scans
+#        if sort == 'rx':
+#            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['rxpin'] )[0].replace('Y', '') ) )
+#            self.scans.sort( key=lambda s: s.dict['rxquad'] )
+#        elif sort == 'tx':
+#            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['txpin'] )[0].replace('Y', '') ) )
+#            self.scans.sort( key=lambda s: s.dict['txquad'] )
+#        else:
+#            print('Error: sorting for scans not suppoerted.')
+#            exit()
 
         # get the openings
         self.openingAtDwell = self.getOpening(self.getDwell())
@@ -59,7 +62,7 @@ class scan():
  
         exit
       
-    def loadScan(self, path, site, comment="" ):
+    def loadScan(self, path, site, transciever, comment="" ):
         scans = []
         with open( path + '/configuration_summary.json' ) as cfg_file:
                 cfg = json.load( cfg_file )
@@ -68,7 +71,16 @@ class scan():
                     if item[1]['status'] == 'NO LINK' :
                         continue
                     
-                    if item[1]['DCtx']['site'].replace('X', '') == site.replace('X', ''):
+                    transcieverTarget = ''    
+                    if transciever.casefold() == 'rx' :
+                        transcieverTarget = 'DCrx'
+                    elif transciever.casefold() == 'tx' :
+                        transcieverTarget = 'DCtx'
+                    else :
+                        print('Error: transciever not recognised: '+transciever)
+                        exit()
+
+                    if item[1][transcieverTarget]['site'].replace('X', '') == site.replace('X', ''):
                         scans.append( run.Run.fromJSON( item, path, comment='' ) )
                         
         return scans

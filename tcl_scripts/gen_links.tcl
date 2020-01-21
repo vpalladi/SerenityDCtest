@@ -34,6 +34,8 @@ set tclBase "/home/ahoward/DCTesting/SerenityDCtest_new/tcl_scripts"
 set configFileName "$tclBase/connections_config.json"
 set ku15p_sm1_v2_fileName "$tclBase/ku15p_sm1_v2_connectivity.json"
 set ku15p_so1_v1_fileName "$tclBase/ku15p_so1_v1_connectivity.json"
+## add here all the other config file 
+
 
 set configFileIn [open $configFileName r]
 set connectivity [dict create \
