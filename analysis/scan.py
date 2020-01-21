@@ -35,7 +35,7 @@ class scan():
         self.scanId = scanId
         self.description = description
         self.site = 'X' + site
-        self.transciever = transciever
+        self.transciever = transciever.casefold()
         self.scans = []
 
         # get the scans from JSON
@@ -44,16 +44,16 @@ class scan():
         else :
             self.scans = db.query( {'timestamp' : self.scanId, 'X' : self.site} )
 
-#        # sort the scans
-#        if sort == 'rx':
-#            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['rxpin'] )[0].replace('Y', '') ) )
-#            self.scans.sort( key=lambda s: s.dict['rxquad'] )
-#        elif sort == 'tx':
-#            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['txpin'] )[0].replace('Y', '') ) )
-#            self.scans.sort( key=lambda s: s.dict['txquad'] )
-#        else:
-#            print('Error: sorting for scans not suppoerted.')
-#            exit()
+        # sort the scans
+        if self.transciever == 'rx':
+            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['rxpin'] )[0].replace('Y', '') ) )
+            self.scans.sort( key=lambda s: s.dict['rxquad'] )
+        elif self.transciever == 'tx':
+            self.scans.sort( key=lambda s: int( re.findall( 'Y[0-9+]', s.dict['txpin'] )[0].replace('Y', '') ) )
+            self.scans.sort( key=lambda s: s.dict['txquad'] )
+        else:
+            print('Error: sorting for scans not suppoerted.')
+            exit()
 
         # get the openings
         self.openingAtDwell = self.getOpening(self.getDwell())
@@ -72,9 +72,9 @@ class scan():
                         continue
                     
                     transcieverTarget = ''    
-                    if transciever.casefold() == 'rx' :
+                    if transciever == 'rx' :
                         transcieverTarget = 'DCrx'
-                    elif transciever.casefold() == 'tx' :
+                    elif transciever == 'tx' :
                         transcieverTarget = 'DCtx'
                     else :
                         print('Error: transciever not recognised: '+transciever)

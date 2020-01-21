@@ -31,17 +31,10 @@ def main():
         "-d", "--site", dest="site", 
         help="The site for the specific scan.",
         type='string', default='0')
-#    parser.add_option(
-#        "-r", "--transciever", dest="transciever", 
-#        help="The site for the specific scan.",
-#        type='string', default='0')
-
     parser.add_option(
         "-a", "--description", dest="scanDescription",
         help="The description of the scan. Goes to the histo axis.",
         type='string', default='main')
-    
-
     parser.add_option(
         "-q", "--scanCompare", dest="scanCompare",
         help="The config file for the copare scan: path to the scan for file input OR the scanId for DB input.", type='string',
@@ -72,12 +65,11 @@ def main():
 
     # outFileName = options.outFileName
 
-#    scanSorting = 'tx'
+    transcieverSelection = 'rx'
 
     s = scan( options.scan,
               options.site,
               description=options.scanDescription,
-              #sort=scanSorting,
               fromJSON=options.fromJSON
     )
 

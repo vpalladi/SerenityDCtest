@@ -51,7 +51,12 @@ set config [ ::json::json2dict $configRaw ]
 set baseBoard     [ dict get $config BaseBoard ]
 set DCs           [ dict get $config DCs ]
 
-set hwConnections [ dict get $config hardwareConnections ]
+set hwConnections_tmp [ dict get $config hardwareConnections ]
+set hwConnections [ dict create ]
+
+dict for { key c } $hwConnections_tmp {
+    dict append hwConnections $c $key
+}
 
 set JTAG          [ dict get $config JTAG ]
 set JTAGid        [ dict get $JTAG JTAGid ]
