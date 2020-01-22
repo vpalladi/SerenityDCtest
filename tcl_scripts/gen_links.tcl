@@ -28,7 +28,7 @@ package require json
 set MGTtypeId [ dict create GTH "_1_0_0/IBERT" GTY "_1_0_55/IBERT" ]
 
 # open files
-set tclBase  "/home/hwtest/vpalladi/SerenityDCtest/tcl_scripts"
+set tclBase  "/home/ahoward/DCTesting/SerenityDCtest_new/tcl_scripts"
 
 set configFileName "$tclBase/connections_config.json"
 set ku15p_sm1_v2_fileName "$tclBase/ku15p_sm1_v2_connectivity.json"

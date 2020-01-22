@@ -6,10 +6,10 @@
     },
     "DCs" : { 
     "X0" : { "type" : "sm1_v2",
-             "id" : "a-001",
+             "id" : "a003",
            },
     "X1" : { "type" : "sm1_v2",
-             "id" : "a-002",
+             "id" : "a004",
            }
     },
     "hardwareConnections" : {
