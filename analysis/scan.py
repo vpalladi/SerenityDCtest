@@ -154,7 +154,7 @@ class scan():
         ax.set_ylim([-1, self.getNlinks()])
         ax.set_xlim([0, 1])
         ax.set_ylabel('linkId')
-        ax.set_xlabel('a.u.')
+        ax.set_xlabel('opening fraction')
 
     def compare(self, scan):
 
