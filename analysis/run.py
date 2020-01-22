@@ -147,19 +147,24 @@ class Run:
         return string
 
     def getDataFrame(self, purge=False):
+        value = []
         if purge:
             if hasattr(self, 'purgedf'):
-                return self.purgedf
+                return( self.purgedf )
         else:
             if hasattr(self, 'df'):
-                return self.df
+                return( self.df )
+        
         if not hasattr(self, 'df'):
-            self.df = pd.DataFrame(self.dict['data'])
+            self.df = pd.DataFrame( self.dict['data'] )
+            self.df.time = self.df.time/64. # time normalization
         if purge:
+        
             self.purgedf = self.df[
                 self.df['BER'] > self.df['BER'].min()].copy()
             self.purgedf['logBER'] = np.log(self.purgedf['BER'])
             return self.purgedf
+        
         return self.df
 
     def getPrecision(self):
@@ -184,14 +189,14 @@ class Run:
         if hasattr(self, 'popt') and hasattr(self, 'pcov'):
             return self.popt, self.pcov
         df = self.getDataFrame(purge=True)
-        start = (1, -27, 25, 1.2)
+        start = (1, -0.45, 0.45, 1.2/64)
         self.popt, self.pcov = curve_fit(BERlog, df['time'].values, df['logBER'].values, p0=start)
         return self.popt, self.pcov
 
     def getOpening(self, BERvalue):
         popt, pcov = self.fitPurgeLog()
         popt = np.append(popt, -np.log(BERvalue))
-        edges = fsolve(BERlogShift, [-20, 20], args=tuple(popt), factor=0.1)
+        edges = fsolve(BERlogShift, [-0.45, 0.45], args=tuple(popt), factor=0.1)
         opening = edges[1] - edges[0]
         df = self.getDataFrame(purge=False)
         openingPC = abs(opening) / \
@@ -213,7 +218,7 @@ class Run:
             fontsize=fontsize, transform=ax.transAxes)
         ax.text(
             0.1, 0.9,
-            'pc@1e-12 ' + str(format(np.abs(o12[0] - o12[1])/64, '.2f')),
+            'pc@1e-12 ' + str(format(np.abs(o12[0] - o12[1]), '.2f')),
             fontsize=fontsize, transform=ax.transAxes)
 
         ax.set_yscale('log')

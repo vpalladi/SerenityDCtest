@@ -28,7 +28,6 @@ greenAlpha = (0, 0.75, 0, 0.5)
 # scanId: is the timestamp in case you want to read for DB and the path of the scan if you want to read from a folder
 # transciever: is definig which of the Rx/Tx consider  
 class scan():
-#    def __init__(self, scanId, site, description='BER Scan', sort='rx', fromJSON=False):
     def __init__(self, scanId, site, transciever='rx', description='BER Scan', fromJSON=False):
 
         # info
@@ -89,19 +88,19 @@ class scan():
         return [ scan.dict['Dwell BER'] for scan in self.scans ]
 
     def getOpening(self, precision):
-        return [scan.getOpening(prec) for scan, prec in zip(self.scans, precision)]
+        return [ scan.getOpening(prec) for scan, prec in zip( self.scans, precision ) ]
 
     def getNlinks(self):
         return len(self.scans)
 
     def getBERplot(self, linkId, ax):
 
-        if linkId < 0 or linkId >= len(self.scans):
+        if linkId < 0 or linkId >= len( self.scans ):
             print(' Error: linkId out of bounds')
             return None
 
         # only the BER
-        df = self.scans[linkId].getDataFrame(purge=True)
+        df = self.scans[linkId].getDataFrame( purge=True )
         ax.plot( df['time'], 
                  df['BER'], 
                  'o', markersize=3, color='c')
@@ -139,7 +138,7 @@ class scan():
         lines = mc.LineCollection(openings12, colors=colours)
         ax.add_collection(lines)
         ax.set_ylim([-1, self.getNlinks()])
-        ax.set_xlim([-32, 32])
+        ax.set_xlim([-0.5, 0.5])
         ax.set_ylabel('linkId')
         ax.set_xlabel('a.u.')
 
@@ -153,7 +152,7 @@ class scan():
 
         ax.scatter(openings12, link, c=colours)
         ax.set_ylim([-1, self.getNlinks()])
-        ax.set_xlim([0, 64])
+        ax.set_xlim([0, 1])
         ax.set_ylabel('linkId')
         ax.set_xlabel('a.u.')
 
@@ -187,7 +186,7 @@ class scan():
         ax.add_collection(linesFirst)
         ax.add_collection(linesSecond)
         ax.set_ylim([-1, self.getNlinks()])
-        ax.set_xlim([-32, 32])
+        ax.set_xlim([-0.5, 0.5])
         ax.set_ylabel('linkId')
         ax.set_xlabel('a.u.')
 
